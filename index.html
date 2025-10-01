@@ -7,83 +7,81 @@
 <style>
 :root{
   --bg:#ffffff;--fg:#0f172a;--muted:#475569;--muted2:#64748b;--accent:#0f172a;
-  --pill:#f1f5f9;--green:#16a34a;--red:#dc2626;--orange:#ea580c;--dark:#0b1324;
-  --shadow:0 10px 24px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06);
+  --pill:#f1f5f9;--green:#16a34a;--red:#dc2626;--orange:#ea580c;--dark:#000000;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-.wrap{max-width:700px;margin:0 auto;padding:56px 18px}
+.wrap{max-width:700px;margin:0 auto;padding:48px 16px}
 .h1{font-size:20px;font-weight:700;margin:0 0 10px}
 .small{font-size:12px;color:var(--muted2)}
-.center{text-align:center}
 .section{display:none}
 .section.active{display:block}
 
-/* Visual building blocks */
-.frame{background:#fff;box-shadow:var(--shadow)}
-.robot-box{width:180px;height:180px;display:grid;place-items:center;margin:0 auto}
-.robot-box img{width:150px;height:150px;object-fit:contain}
-.bubble{background:#fff;box-shadow:var(--shadow);padding:18px;margin:14px 0 10px}
-.instructions{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+/* Strict square, bold-line style (no shadows anywhere) */
+.square{background:#fff;border:4px solid #000;border-radius:0}
+.robot-box{width:120px;height:120px;display:grid;place-items:center;margin:0 auto 12px;border:4px solid #000}
+.robot-box img{width:92px;height:92px;object-fit:contain}
 
-.btn{border:0;background:#fff;border-radius:14px;padding:14px 18px;font-weight:800;cursor:pointer}
-.btn.primary{background:var(--accent);color:#fff}
-.btn.dark{background:var(--dark);color:#fff}
-.btn.row{display:inline-flex;align-items:center;gap:8px}
+/* Bubble + question text */
+.bubble{padding:16px;margin:10px 0 10px;border:4px solid #000;border-radius:0;background:#fff}
+.question{padding:12px 14px;border:4px solid #000;background:#fff;font-size:20px;font-weight:800;margin:12px 0 10px;text-align:center}
+
+/* Buttons: square, black, no shadow */
+.btn{border:4px solid #000;background:#000;color:#fff;border-radius:0;padding:16px 18px;font-weight:900;cursor:pointer;font-size:16px}
 .btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-row{display:flex;gap:24px;justify-content:center;margin-top:14px}
 
-.btn-wrap{display:flex;gap:18px;justify-content:center;margin-top:14px}
-.btn-pad{padding:8px;border-radius:16px;box-shadow:var(--shadow);background:#fff}
-
-.grid{display:grid;gap:10px}
-.choice{display:block;width:100%;text-align:left;background:var(--dark);color:#fff;border:0;border-radius:6px;padding:16px;opacity:0;transform:translateY(8px)}
-.choice.show{opacity:1;transform:none;transition:opacity .35s ease, transform .35s ease}
-.choice.correct{background:linear-gradient(0deg, rgba(22,163,74,.16), rgba(22,163,74,.16)), var(--dark);outline:2px solid var(--green)}
-.choice.wrong{background:linear-gradient(0deg, rgba(220,38,38,.16), rgba(220,38,38,.16)), var(--dark);outline:2px solid var(--red)}
-.choice-title{font-weight:900;margin-bottom:6px;font-size:16px}
-.choice-desc{font-size:15px;color:#d1d5db}
+/* Choices: black rectangles like the screenshot */
+.grid{display:grid;gap:12px}
+.choice{display:block;width:100%;text-align:center;background:#000;color:#fff;border:4px solid #000;border-radius:0;padding:16px 12px;opacity:0;transform:translateY(8px)}
+.choice.show{opacity:1;transform:none;transition:opacity .45s ease, transform .45s ease}
+.choice.correct{outline:4px solid var(--green)}
+.choice.wrong{outline:4px solid var(--red)}
+.choice-title{font-weight:900;margin-bottom:6px;font-size:18px}
+.choice-desc{font-size:16px;color:#e5e7eb}
 
 /* Progress + chips */
-.progress{height:8px;background:#eef2f7;overflow:hidden}
+.progress{height:8px;background:#eef2f7;overflow:hidden;border:4px solid #000;border-radius:0}
 .progress>i{display:block;height:100%;background:var(--green);width:0}
 .words-need{display:flex;gap:8px;flex-wrap:wrap}
-.pill{display:inline-block;background:var(--pill);border:1px solid #e2e8f0;border-radius:999px;padding:4px 10px;font-size:13px;color:var(--muted2)}
+.pill{display:inline-block;background:#fff;border:4px solid #000;border-radius:0;padding:6px 10px;font-size:13px;color:#111}
 .hstack{display:flex;justify-content:space-between;align-items:center}
 .row{display:flex;gap:10px;align-items:center}
-.aspect{position:relative;padding-top:56.25%;background:#000;overflow:hidden;box-shadow:var(--shadow)}
+.aspect{position:relative;padding-top:56.25%;background:#000;overflow:hidden;border:4px solid #000;border-radius:0}
 .aspect iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .dots{display:flex;gap:10px;flex-wrap:wrap}
-.dot{width:50px;height:12px;background:#cbd5e1;border:0}
+.dot{width:50px;height:12px;background:#cbd5e1;border:4px solid #000;border-radius:0}
 .dot.active{background:var(--orange)}
 .dot.done{background:var(--green)}
-.spacer{height:28px}
+.spacer{height:24px}
 
-/* Layout helpers */
+/* Centering for welcome */
 .center-col{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh}
-.fullw{width:100%}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- Screen 0: Welcome (centered) -->
+  <!-- Screen 0: Welcome (centered, outline first then typing) -->
   <div class="section active" id="sec-welcome">
     <div class="center-col">
-      <div class="frame robot-box"><img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot.png"/></div>
+      <div class="robot-box"><img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot.png"/></div>
       <div class="bubble" id="welcome-typed"></div>
-      <div class="instructions">Click <b>START</b> to take a quick chat-check, or <b>SKIP</b> to jump straight to the full video.</div>
-      <div id="welcome-buttons" class="btn-wrap" style="visibility:hidden">
-        <div class="btn-pad"><button class="btn dark" id="btn-skip">SKIP</button></div>
-        <div class="btn-pad"><button class="btn primary" id="btn-start">START</button></div>
+      <div class="question" id="welcome-instr" style="display:none">
+        Click START to take a quick chat-check, or SKIP to jump straight to the full video.
+      </div>
+      <div id="welcome-buttons" class="btn-row" style="visibility:hidden">
+        <button class="btn" id="btn-skip">SKIP</button>
+        <button class="btn" id="btn-start">START</button>
       </div>
     </div>
   </div>
 
   <!-- Screen 1: Coach-guided assessment -->
   <div class="section" id="sec-coach">
-    <div class="frame robot-box"><img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot.png"/></div>
+    <div class="robot-box" style="margin-bottom:6px"><img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot.png"/></div>
     <div class="bubble" id="coach-bubble"></div>
-    <div id="coach-area" class="fullw"></div>
+    <div id="coach-area"></div>
     <div class="hstack" style="margin-top:8px">
       <div class="small">Progress: <span id="coach-progress">0/5</span></div>
       <button class="btn" id="coach-skip">Skip word</button>
@@ -91,25 +89,25 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
     <div class="spacer"></div>
   </div>
 
-  <!-- Screen 2: Summary (redesigned for clarity) -->
+  <!-- Screen 2: Summary (clear groups) -->
   <div class="section" id="sec-summary">
     <div class="h1">Your Snapshot</div>
     <div class="small" id="summary-sub"></div>
 
     <div class="grid" style="margin-top:12px">
-      <div class="frame" id="card-practice" style="padding:16px">
-        <div style="font-weight:900;margin-bottom:6px">Practice next (levels 1–3)</div>
+      <div class="square" id="card-practice" style="padding:12px">
+        <div class="h1" style="font-size:18px">Practice next (1–3)</div>
         <div id="list-practice" class="words-need"></div>
       </div>
-      <div class="frame" id="card-strong" style="padding:16px">
-        <div style="font-weight:900;margin-bottom:6px">Already strong (levels 4–5)</div>
+      <div class="square" id="card-strong" style="padding:12px">
+        <div class="h1" style="font-size:18px">Already strong (4–5)</div>
         <div id="list-strong" class="words-need"></div>
       </div>
     </div>
 
     <div class="hstack" style="margin-top:16px">
       <button class="btn" id="btn-back-sum">Back</button>
-      <button class="btn primary" id="btn-next-sum">Next</button>
+      <button class="btn" id="btn-next-sum">Next</button>
     </div>
     <div class="spacer"></div>
   </div>
@@ -130,8 +128,8 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
 
     <div class="hstack" style="margin-top:12px">
       <div class="row">
-        <div class="btn-pad"><button class="btn dark" id="btn-focused">Focused</button></div>
-        <div class="btn-pad"><button class="btn" id="btn-full">Full video</button></div>
+        <button class="btn" id="btn-focused">Focused</button>
+        <button class="btn" id="btn-full">Full video</button>
       </div>
       <div class="small">Mode: <b id="mode-label">Choose a mode</b></div>
     </div>
@@ -160,7 +158,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
   var starts={"diet":46,"junk food":132,"whole food":225,"food security":287,"takeaway":359};
   var VIDEO_ID="LRKlGG0oYKw";
 
-  /* Quality checks (based on your PDF scope) */
+  /* Quality checks */
   function usageQ(word){
     if(word==="diet"){
       return {q:"Pick the sentence that uses “diet” naturally and precisely.",
@@ -171,7 +169,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
       ], a:0, fb:"Use “diet” for a person’s pattern of eating (strict/healthy/balanced)."};
     }
     if(word==="junk food"){
-      return {q:"Pick the sentence that best shows meaning and register of “junk food”.",
+      return {q:"Pick the sentence that best shows the meaning of “junk food”.",
       opts:[
         "During exam week I tend to crave junk food like chips and soda.",
         "We planted junk food in the school garden.",
@@ -203,7 +201,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
   }
   function collocQ(word){
     if(word==="diet"){
-      return {q:"Which option shows a natural collocation with “diet” and accurate meaning?",
+      return {q:"Which option shows a natural collocation with “diet”?",
       opts:["be on a balanced diet for three months","order a diet from a café","finish a diet in one evening"], a:0,
       fb:"Common: balanced/strict/healthy diet; be on a diet; stick to a diet."};
     }
@@ -227,39 +225,36 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
       fb:"You order/get a takeaway; takeaway menu; leftover takeaway."};
   }
 
-  /* ---------- Typing utility ---------- */
+  /* ---------- Typing utility with pacing ---------- */
   let typingTimers=[];
   function typeText(el, text, speed){
-    // Clear pending timeouts to avoid overlaps
     typingTimers.forEach(clearTimeout); typingTimers=[];
     el.textContent="";
     return new Promise(resolve=>{
       let i=0;
-      const step=()=>{
-        if(i<text.length){
-          el.textContent+=text[i++];
-          typingTimers.push(setTimeout(step, speed));
-        }else resolve();
-      };
+      const step=()=>{ if(i<text.length){ el.textContent+=text[i++]; typingTimers.push(setTimeout(step, speed)); } else resolve(); };
       step();
     });
   }
+  function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 
   /* ---------- State ---------- */
-  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v3"))}catch(e){ratings=null}
+  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v4"))}catch(e){ratings=null}
   if(!ratings){ratings={}; WORDS.forEach(w=>ratings[w]=0)}
-  function save(){ try{localStorage.setItem("food-coach-ratings-v3",JSON.stringify(ratings))}catch(e){} }
+  function save(){ try{localStorage.setItem("food-coach-ratings-v4",JSON.stringify(ratings))}catch(e){} }
 
   var S={welcome:document.getElementById("sec-welcome"), coach:document.getElementById("sec-coach"), summary:document.getElementById("sec-summary"), video:document.getElementById("sec-video")};
   function show(id){ Object.values(S).forEach(x=>x.classList.remove("active")); S[id].classList.add("active"); }
 
   /* ---------- Welcome ---------- */
   (async function initWelcome(){
-    await typeText(
-      document.getElementById("welcome-typed"),
-      "Hi! I’m your vocabulary coach. In a minute, I’ll check how well you know five food words, then build a short video just for you.",
-      28
-    );
+    // Show empty square first, then type into it
+    const wtxt=document.getElementById("welcome-typed");
+    await wait(350);
+    await typeText(wtxt,"Hi! I’m your vocabulary coach. I’ll quickly check how well you know five food words, then build a short video just for you.",34);
+    await wait(450);
+    document.getElementById("welcome-instr").style.display="block";
+    await wait(250);
     document.getElementById("welcome-buttons").style.visibility="visible";
   })();
   document.getElementById("btn-start").onclick = () => { show("coach"); startCoach(); };
@@ -277,17 +272,24 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
 
   async function startCoach(){
     coachIdx=0; prog.textContent="0/"+WORDS.length; area.innerHTML="";
-    await typeText(bubble, "Let’s begin. I’ll show a word and you tell me how well you know it.", 28);
-    setTimeout(renderCoach, 200);
+    await wait(300);
+    await typeText(bubble, "We’ll go word by word. Tell me how well you know each one.", 34);
+    await wait(500);
+    renderCoach();
   }
 
   async function renderCoach(){
     clearOptionTimers();
-    area.innerHTML=""; // ensure previous options never linger
+    area.innerHTML="";
     prog.textContent=coachIdx+"/"+WORDS.length;
     if(coachIdx>=WORDS.length){ showSummary(); return; }
     const w=WORDS[coachIdx];
-    await typeText(bubble, `How well do you know “${w}”?`, 28);
+    await wait(300);
+    // Show square first, then question typing (bigger font)
+    bubble.innerHTML="";
+    bubble.style.minHeight="0";
+    await typeText(bubble, `How well do you know “${w}”?`, 32);
+    await wait(450);
 
     const list=document.createElement("div"); list.className="grid"; area.appendChild(list);
     LEVELS.forEach((L, i)=>{
@@ -296,7 +298,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
       b.innerHTML = `<div class="choice-title">${L.v} · ${L.title}</div><div class="choice-desc">${L.desc}</div>`;
       b.onclick=()=>handleLevel(w, L.v);
       list.appendChild(b);
-      optionTimers.push(setTimeout(()=>b.classList.add("show"), 220*i + 160)); // slower reveal
+      optionTimers.push(setTimeout(()=>b.classList.add("show"), 320*i + 220)); // slower, spaced
     });
   }
 
@@ -305,40 +307,43 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
   async function handleLevel(word, level){
     clearOptionTimers();
     // levels 1–3: accept directly
-    if(level<=3){ ratings[word]=level; save(); await typeText(bubble, "Got it. Thanks!", 26); nextWord(); return; }
+    if(level<=3){ ratings[word]=level; save(); await wait(250); await typeText(bubble, "Thanks—got it.", 32); await wait(400); nextWord(); return; }
     // levels 4–5: challenge
     const isColloc = level===5;
     const Q = isColloc ? collocQ(word) : usageQ(word);
-    await typeText(bubble, "Quick check first. "+Q.q, 26);
+    await wait(250);
+    bubble.innerHTML="";
+    await typeText(bubble, "Quick check first. "+Q.q, 30);
+    await wait(350);
     area.innerHTML="";
     const list=document.createElement("div"); list.className="grid"; area.appendChild(list);
 
     Q.opts.forEach((opt, i)=>{
       const b=document.createElement("button");
-      b.className="choice"; b.innerHTML=`<div>${opt}</div>`;
+      b.className="choice"; b.innerHTML=`<div class="choice-desc" style="font-size:18px">${opt}</div>`;
       b.onclick=async ()=>{
-        [...list.children].forEach(x=>x.disabled=true); // lock
+        [...list.children].forEach(x=>x.disabled=true);
         if(i===Q.a){
           b.classList.add("correct");
           ratings[word]=level; save();
-          await typeText(bubble, "Nice use! Moving on.", 26);
-          nextWord();
+          await wait(250); await typeText(bubble, "Nice use! Moving on.", 30);
+          await wait(400); nextWord();
         }else{
           b.classList.add("wrong");
-          await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb}`, 26);
+          await wait(250); await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb}`, 30);
           ratings[word]=3; save();
-          nextWord();
+          await wait(450); nextWord();
         }
       };
       list.appendChild(b);
-      optionTimers.push(setTimeout(()=>b.classList.add("show"), 220*i + 160));
+      optionTimers.push(setTimeout(()=>b.classList.add("show"), 320*i + 220));
     });
   }
 
-  /* ---------- Summary (clearer design) ---------- */
+  /* ---------- Summary ---------- */
   function showSummary(){
     show("summary");
-    document.getElementById("summary-sub").textContent="Green chips are words you’re strong with (4–5). Grey chips are your practice targets (1–3).";
+    document.getElementById("summary-sub").textContent="Practice targets on the left (1–3). Strong words on the right (4–5).";
     const practice=document.getElementById("list-practice"); practice.innerHTML="";
     const strong=document.getElementById("list-strong"); strong.innerHTML="";
 
@@ -347,7 +352,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
       const chip=document.createElement("span");
       chip.className="pill";
       chip.textContent=`${w} · ${lvl}`;
-      if(lvl>=4){ chip.style.background="#ecfdf5"; chip.style.borderColor="#bbf7d0"; chip.style.color="#166534"; strong.appendChild(chip); }
+      if(lvl>=4){ chip.style.background="#fff"; chip.style.color="#000"; strong.appendChild(chip); }
       else { practice.appendChild(chip); }
     });
   }
@@ -400,7 +405,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
       const btns=document.createElement('div'); btns.className='row';
       const b1=document.createElement('button'); b1.className='btn'; b1.textContent='Prev'; b1.disabled=idx===0; b1.onclick=()=>{idx=Math.max(0,idx-1); renderPlayer();};
       const b2=document.createElement('button'); b2.className='btn'; b2.textContent='Rewatch'; b2.onclick=()=>{ if(player){ player.seekTo(start,true); player.playVideo(); } };
-      const b3=document.createElement('button'); b3.className='btn primary'; b3.textContent='Next'; b3.disabled=idx===needed.length-1; b3.onclick=()=>{ idx=Math.min(needed.length-1,idx+1); renderPlayer(); };
+      const b3=document.createElement('button'); b3.className='btn'; b3.textContent='Next'; b3.disabled=idx===needed.length-1; b3.onclick=()=>{ idx=Math.min(needed.length-1,idx+1); renderPlayer(); };
       btns.appendChild(b1); btns.appendChild(b2); btns.appendChild(b3); controls.appendChild(document.createElement('span')); controls.appendChild(btns);
 
       area.appendChild(meta); area.appendChild(holder); area.appendChild(dots); area.appendChild(timing); area.appendChild(controls);
