@@ -6,140 +6,122 @@
 <title>Food Vocabulary – Coach + Adaptive Video</title>
 <style>
 :root{
-  --bg:#ffffff;--fg:#0f172a;--muted:#475569;--muted2:#64748b;--accent:#0f172a;
-  --pill:#f1f5f9;--green:#16a34a;--red:#dc2626;--orange:#ea580c;--dark:#000000;
+  --bg:#ffffff;--fg:#000;--muted:#475569;--muted2:#64748b;
+  --green:#16a34a;--red:#dc2626;--orange:#ea580c;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-.wrap{max-width:700px;margin:0 auto;padding:48px 16px}
-.h1{font-size:20px;font-weight:700;margin:0 0 10px}
-.small{font-size:12px;color:var(--muted2)}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.6 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+.wrap{max-width:720px;margin:0 auto;padding:40px 16px}
 .section{display:none}
 .section.active{display:block}
 
-/* Strict square, bold-line style (no shadows anywhere) */
+/* Squares with bold black borders (no shadows, no rounded corners) */
 .square{background:#fff;border:4px solid #000;border-radius:0}
+
+/* Welcome */
+.center-col{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh}
 .robot-box{width:120px;height:120px;display:grid;place-items:center;margin:0 auto 12px;border:4px solid #000}
 .robot-box img{width:92px;height:92px;object-fit:contain}
-
-/* Bubble + question text */
-.bubble{padding:16px;margin:10px 0 10px;border:4px solid #000;border-radius:0;background:#fff}
-.question{padding:12px 14px;border:4px solid #000;background:#fff;font-size:20px;font-weight:800;margin:12px 0 10px;text-align:center}
-
-/* Buttons: square, black, no shadow */
-.btn{border:4px solid #000;background:#000;color:#fff;border-radius:0;padding:16px 18px;font-weight:900;cursor:pointer;font-size:16px}
-.btn:disabled{opacity:.6;cursor:not-allowed}
+.bubble{padding:16px;margin:10px 0;border:4px solid #000;background:#fff}
+.btn{border:4px solid #000;background:#000;color:#fff;border-radius:0;cursor:pointer}
+.btn-lg{padding:14px 18px;font-weight:900;font-size:16px}
+.btn-sm{padding:8px 10px;font-weight:800;font-size:14px}
 .btn-row{display:flex;gap:24px;justify-content:center;margin-top:14px}
 
-/* Choices: black rectangles like the screenshot */
-.grid{display:grid;gap:12px}
-.choice{display:block;width:100%;text-align:center;background:#000;color:#fff;border:4px solid #000;border-radius:0;padding:16px 12px;opacity:0;transform:translateY(8px)}
+/* Coach text (larger than options) */
+.question{padding:12px 14px;border:4px solid #000;background:#fff;
+  font-size:22px;font-weight:800;margin:12px 0 10px;text-align:center}
+
+/* Options: black rectangles, centered, narrower width */
+.options{display:grid;gap:12px;justify-items:center}
+.choice{display:block;text-align:center;background:#000;color:#fff;border:4px solid #000;border-radius:0;
+  padding:14px 12px;opacity:0;transform:translateY(8px);width:100%;max-width:560px}
 .choice.show{opacity:1;transform:none;transition:opacity .45s ease, transform .45s ease}
 .choice.correct{outline:4px solid var(--green)}
 .choice.wrong{outline:4px solid var(--red)}
-.choice-title{font-weight:900;margin-bottom:6px;font-size:18px}
+.choice-title{font-weight:900;margin-bottom:6px;font-size:17px}
 .choice-desc{font-size:16px;color:#e5e7eb}
 
-/* Progress + chips */
-.progress{height:8px;background:#eef2f7;overflow:hidden;border:4px solid #000;border-radius:0}
-.progress>i{display:block;height:100%;background:var(--green);width:0}
+/* Chips and progress dots */
 .words-need{display:flex;gap:8px;flex-wrap:wrap}
 .pill{display:inline-block;background:#fff;border:4px solid #000;border-radius:0;padding:6px 10px;font-size:13px;color:#111}
-.hstack{display:flex;justify-content:space-between;align-items:center}
-.row{display:flex;gap:10px;align-items:center}
-.aspect{position:relative;padding-top:56.25%;background:#000;overflow:hidden;border:4px solid #000;border-radius:0}
-.aspect iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.dots{display:flex;gap:10px;flex-wrap:wrap}
+.dots{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 .dot{width:50px;height:12px;background:#cbd5e1;border:4px solid #000;border-radius:0}
 .dot.active{background:var(--orange)}
 .dot.done{background:var(--green)}
-.spacer{height:24px}
 
-/* Centering for welcome */
-.center-col{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh}
+/* Video */
+.aspect{position:relative;padding-top:56.25%;background:#000;overflow:hidden;border:4px solid #000;border-radius:0}
+.aspect iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.spacer{height:28px}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- Screen 0: Welcome (centered, outline first then typing) -->
+  <!-- Screen 0: Welcome -->
   <div class="section active" id="sec-welcome">
     <div class="center-col">
       <div class="robot-box"><img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot.png"/></div>
       <div class="bubble" id="welcome-typed"></div>
-      <div class="question" id="welcome-instr" style="display:none">
-        Click START to take a quick chat-check, or SKIP to jump straight to the full video.
-      </div>
       <div id="welcome-buttons" class="btn-row" style="visibility:hidden">
-        <button class="btn" id="btn-skip">SKIP</button>
-        <button class="btn" id="btn-start">START</button>
+        <button class="btn btn-lg" id="btn-skip">SKIP</button>
+        <button class="btn btn-lg" id="btn-start">START</button>
       </div>
     </div>
   </div>
 
-  <!-- Screen 1: Coach-guided assessment -->
+  <!-- Screen 1: Coach-guided assessment (no robot here) -->
   <div class="section" id="sec-coach">
-    <div class="robot-box" style="margin-bottom:6px"><img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot.png"/></div>
-    <div class="bubble" id="coach-bubble"></div>
+    <div class="question" id="coach-bubble"></div>
     <div id="coach-area"></div>
-    <div class="hstack" style="margin-top:8px">
-      <div class="small">Progress: <span id="coach-progress">0/5</span></div>
-      <button class="btn" id="coach-skip">Skip word</button>
+    <div class="square" style="padding:10px;margin-top:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Progress: <b id="coach-progress">0/5</b></span>
+        <button class="btn btn-sm" id="coach-skip">SKIP</button>
+      </div>
     </div>
     <div class="spacer"></div>
   </div>
 
-  <!-- Screen 2: Summary (clear groups) -->
+  <!-- Screen 2: Summary -->
   <div class="section" id="sec-summary">
-    <div class="h1">Your Snapshot</div>
-    <div class="small" id="summary-sub"></div>
-
-    <div class="grid" style="margin-top:12px">
-      <div class="square" id="card-practice" style="padding:12px">
-        <div class="h1" style="font-size:18px">Practice next (1–3)</div>
-        <div id="list-practice" class="words-need"></div>
-      </div>
-      <div class="square" id="card-strong" style="padding:12px">
-        <div class="h1" style="font-size:18px">Already strong (4–5)</div>
-        <div id="list-strong" class="words-need"></div>
-      </div>
+    <div class="question">Your Snapshot</div>
+    <div class="square" style="padding:12px;margin-bottom:12px">
+      Practice next (1–3): <span id="list-practice" class="words-need" style="margin-left:8px"></span>
     </div>
-
-    <div class="hstack" style="margin-top:16px">
-      <button class="btn" id="btn-back-sum">Back</button>
-      <button class="btn" id="btn-next-sum">Next</button>
+    <div class="square" style="padding:12px">
+      Already strong (4–5): <span id="list-strong" class="words-need" style="margin-left:8px"></span>
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-sm" id="btn-next-sum">NEXT</button>
     </div>
     <div class="spacer"></div>
   </div>
 
   <!-- Screen 3: Adaptive video -->
   <div class="section" id="sec-video">
-    <div class="h1">Targeted Video Practice</div>
-    <div class="small">We’ll play only the parts for words you rated 1–3. You can watch the full video too.</div>
+    <div class="question">Targeted Video Practice</div>
 
+    <div class="square" style="padding:12px;margin-bottom:12px">
+      Words to watch: <span id="need-words" class="words-need" style="margin-left:8px"></span>
+    </div>
+
+    <!-- reserved space where progress text used to be (kept empty intentionally) -->
     <div class="spacer"></div>
-    <div class="small" style="margin-bottom:6px"><b>Words to watch</b></div>
-    <div class="words-need" id="need-words"></div>
 
-    <div style="margin-top:12px">
-      <div class="hstack small"><span id="seg-count">Segments completed: 0/0</span><span id="seg-pct">0%</span></div>
-      <div class="progress" style="margin-top:6px"><i id="seg-bar"></i></div>
+    <div style="margin-top:8px" id="video-area"></div>
+
+    <!-- dots under the video with extra bottom padding so they never touch -->
+    <div class="dots" id="seg-dots"></div>
+    <div class="spacer"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-sm" id="btn-focused">FOCUSED</button>
+      <button class="btn btn-sm" id="btn-full">FULL VIDEO</button>
     </div>
 
-    <div class="hstack" style="margin-top:12px">
-      <div class="row">
-        <button class="btn" id="btn-focused">Focused</button>
-        <button class="btn" id="btn-full">Full video</button>
-      </div>
-      <div class="small">Mode: <b id="mode-label">Choose a mode</b></div>
-    </div>
-
-    <div style="margin-top:12px" id="video-area"></div>
-
-    <div class="hstack" style="margin-top:14px">
-      <button class="btn" id="btn-back-vid">Back</button>
-      <div class="small">Tip: Try Focused first, then Full.</div>
-    </div>
     <div class="spacer"></div>
   </div>
 </div>
@@ -225,35 +207,35 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
       fb:"You order/get a takeaway; takeaway menu; leftover takeaway."};
   }
 
-  /* ---------- Typing utility with pacing ---------- */
+  /* ---------- Typing + pacing ---------- */
   let typingTimers=[];
   function typeText(el, text, speed){
     typingTimers.forEach(clearTimeout); typingTimers=[];
     el.textContent="";
     return new Promise(resolve=>{
-      let i=0;
-      const step=()=>{ if(i<text.length){ el.textContent+=text[i++]; typingTimers.push(setTimeout(step, speed)); } else resolve(); };
+      let i=0; const step=()=>{ if(i<text.length){ el.textContent+=text[i++]; typingTimers.push(setTimeout(step, speed)); } else resolve(); };
       step();
     });
   }
-  function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+  const wait = (ms)=>new Promise(r=>setTimeout(r,ms));
 
   /* ---------- State ---------- */
-  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v4"))}catch(e){ratings=null}
+  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v5"))}catch(e){ratings=null}
   if(!ratings){ratings={}; WORDS.forEach(w=>ratings[w]=0)}
-  function save(){ try{localStorage.setItem("food-coach-ratings-v4",JSON.stringify(ratings))}catch(e){} }
+  function save(){ try{localStorage.setItem("food-coach-ratings-v5",JSON.stringify(ratings))}catch(e){} }
 
   var S={welcome:document.getElementById("sec-welcome"), coach:document.getElementById("sec-coach"), summary:document.getElementById("sec-summary"), video:document.getElementById("sec-video")};
   function show(id){ Object.values(S).forEach(x=>x.classList.remove("active")); S[id].classList.add("active"); }
 
   /* ---------- Welcome ---------- */
   (async function initWelcome(){
-    // Show empty square first, then type into it
-    const wtxt=document.getElementById("welcome-typed");
-    await wait(350);
-    await typeText(wtxt,"Hi! I’m your vocabulary coach. I’ll quickly check how well you know five food words, then build a short video just for you.",34);
-    await wait(450);
-    document.getElementById("welcome-instr").style.display="block";
+    const tgt=document.getElementById("welcome-typed");
+    await wait(250);
+    await typeText(
+      tgt,
+      "Hi! I’m your vocabulary coach. We’ll quickly check how well you know five food words, then build a short video just for you. Click START to take a quick chat-check, or SKIP to jump straight to the full video.",
+      28
+    );
     await wait(250);
     document.getElementById("welcome-buttons").style.visibility="visible";
   })();
@@ -265,15 +247,15 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
   var bubble=document.getElementById("coach-bubble");
   var area=document.getElementById("coach-area");
   var prog=document.getElementById("coach-progress");
-  document.getElementById("coach-skip").onclick=function(){nextWord()};
+  document.getElementById("coach-skip").onclick=function(){ renderVideo(true); show("video"); };
 
   let optionTimers=[];
   function clearOptionTimers(){ optionTimers.forEach(clearTimeout); optionTimers=[]; }
 
   async function startCoach(){
     coachIdx=0; prog.textContent="0/"+WORDS.length; area.innerHTML="";
-    await wait(300);
-    await typeText(bubble, "We’ll go word by word. Tell me how well you know each one.", 34);
+    await wait(350);
+    await typeText(bubble, "We’ll go word by word. Tell me how well you know each one.", 30);
     await wait(500);
     renderCoach();
   }
@@ -284,80 +266,74 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
     prog.textContent=coachIdx+"/"+WORDS.length;
     if(coachIdx>=WORDS.length){ showSummary(); return; }
     const w=WORDS[coachIdx];
-    await wait(300);
-    // Show square first, then question typing (bigger font)
-    bubble.innerHTML="";
-    bubble.style.minHeight="0";
-    await typeText(bubble, `How well do you know “${w}”?`, 32);
+    await wait(350);
+    await typeText(bubble, `How well do you know “${w}”?`, 28);
     await wait(450);
 
-    const list=document.createElement("div"); list.className="grid"; area.appendChild(list);
+    const list=document.createElement("div"); list.className="options"; area.appendChild(list);
     LEVELS.forEach((L, i)=>{
       const b=document.createElement("button");
       b.className="choice"; b.setAttribute("data-level", L.v);
       b.innerHTML = `<div class="choice-title">${L.v} · ${L.title}</div><div class="choice-desc">${L.desc}</div>`;
-      b.onclick=()=>handleLevel(w, L.v);
+      b.onclick=()=>handleLevel(w, L.v, list);
       list.appendChild(b);
-      optionTimers.push(setTimeout(()=>b.classList.add("show"), 320*i + 220)); // slower, spaced
+      optionTimers.push(setTimeout(()=>b.classList.add("show"), 320*i + 260));
     });
   }
 
   function nextWord(){ coachIdx++; prog.textContent=coachIdx+"/"+WORDS.length; renderCoach(); }
 
-  async function handleLevel(word, level){
+  async function handleLevel(word, level, listEl){
     clearOptionTimers();
-    // levels 1–3: accept directly
-    if(level<=3){ ratings[word]=level; save(); await wait(250); await typeText(bubble, "Thanks—got it.", 32); await wait(400); nextWord(); return; }
-    // levels 4–5: challenge
+    if(level<=3){
+      ratings[word]=level; save();
+      await wait(250); await typeText(bubble, "Thanks—got it.", 28);
+      await wait(400); nextWord(); return;
+    }
+    // Hide level options first, then ask challenge question
+    listEl.innerHTML="";
+    await wait(250);
     const isColloc = level===5;
     const Q = isColloc ? collocQ(word) : usageQ(word);
-    await wait(250);
-    bubble.innerHTML="";
-    await typeText(bubble, "Quick check first. "+Q.q, 30);
+    await typeText(bubble, "Quick check first. "+Q.q, 26);
     await wait(350);
-    area.innerHTML="";
-    const list=document.createElement("div"); list.className="grid"; area.appendChild(list);
 
+    const list=document.createElement("div"); list.className="options"; area.appendChild(list);
     Q.opts.forEach((opt, i)=>{
       const b=document.createElement("button");
-      b.className="choice"; b.innerHTML=`<div class="choice-desc" style="font-size:18px">${opt}</div>`;
+      b.className="choice"; b.innerHTML=`<div class="choice-desc" style="font-size:17px">${opt}</div>`;
       b.onclick=async ()=>{
         [...list.children].forEach(x=>x.disabled=true);
         if(i===Q.a){
           b.classList.add("correct");
           ratings[word]=level; save();
-          await wait(250); await typeText(bubble, "Nice use! Moving on.", 30);
-          await wait(400); nextWord();
+          await wait(250); await typeText(bubble, "Nice use! Moving on.", 26);
+          await wait(420); nextWord();
         }else{
           b.classList.add("wrong");
-          await wait(250); await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb}`, 30);
+          await wait(250); await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb}`, 26);
           ratings[word]=3; save();
           await wait(450); nextWord();
         }
       };
       list.appendChild(b);
-      optionTimers.push(setTimeout(()=>b.classList.add("show"), 320*i + 220));
+      optionTimers.push(setTimeout(()=>b.classList.add("show"), 320*i + 260));
     });
   }
 
   /* ---------- Summary ---------- */
   function showSummary(){
     show("summary");
-    document.getElementById("summary-sub").textContent="Practice targets on the left (1–3). Strong words on the right (4–5).";
     const practice=document.getElementById("list-practice"); practice.innerHTML="";
     const strong=document.getElementById("list-strong"); strong.innerHTML="";
-
     WORDS.forEach(w=>{
       const lvl=ratings[w]||1;
       const chip=document.createElement("span");
-      chip.className="pill";
-      chip.textContent=`${w} · ${lvl}`;
-      if(lvl>=4){ chip.style.background="#fff"; chip.style.color="#000"; strong.appendChild(chip); }
-      else { practice.appendChild(chip); }
+      chip.className="pill"; chip.textContent=`${w} · ${lvl}`;
+      if(lvl>=4){ strong.appendChild(chip); } else { practice.appendChild(chip); }
     });
   }
-  document.getElementById("btn-back-sum").onclick=function(){ show("coach"); startCoach(); }
-  document.getElementById("btn-next-sum").onclick=function(){ renderVideo(false); show("video"); }
+  document.getElementById("btn-next-sum").onclick=function(){ renderVideo(false); show("video"); };
 
   /* ---------- Video ---------- */
   function buildEmbed(start,end,controls,autoplay){
@@ -378,37 +354,29 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
     needed.forEach(s=>{const e=document.createElement("span"); e.className="pill"; e.textContent=s.word; needWords.appendChild(e);});
 
     const area=document.getElementById("video-area");
-    const segCount=document.getElementById("seg-count");
-    const segPct=document.getElementById("seg-pct");
-    const segBar=document.getElementById("seg-bar");
-    const modeLabel=document.getElementById("mode-label");
-
+    const dotsHost=document.getElementById("seg-dots"); dotsHost.innerHTML="";
     let mode = startFullImmediately ? 'full' : 'none';
-    let idx=0, completed=new Array(needed.length).fill(false);
-    function updateProg(){const total=needed.length, done=completed.filter(Boolean).length, pct=total?Math.round(done/total*100):0; segCount.textContent=`Segments completed: ${done}/${total}`; segPct.textContent=`${pct}%`; if(segBar) segBar.style.width=`${pct}%`; }
-    updateProg();
+    let idx=0, started=new Array(needed.length).fill(false); // turn green when started
+
+    // Build static dots once
+    needed.forEach((s,i)=>{const d=document.createElement('button'); d.className='dot'; dotsHost.appendChild(d);});
 
     let ytReady=false, player=null;
     function loadYT(){ if(window.YT&&window.YT.Player){onReady();return} const tag=document.createElement('script'); tag.src='https://www.youtube.com/iframe_api'; document.body.appendChild(tag); window.onYouTubeIframeAPIReady=onReady; }
     function onReady(){ ytReady=true; if(mode==='focused') renderPlayer(); }
 
+    function markDots(){
+      const dots=[...dotsHost.children];
+      dots.forEach((d,i)=>{ d.classList.remove('active'); if(started[i]) d.classList.add('done'); });
+      if(dots[idx]) dots[idx].classList.add('active');
+    }
+
     function mountAPI(start,end){
       area.innerHTML='';
-      const meta=document.createElement('div'); meta.className='small'; meta.innerHTML=`<b>Segment ${idx+1} of ${needed.length}</b> — ${needed[idx].word}`;
-      const holder=document.createElement('div'); holder.className='aspect'; const inner=document.createElement('div'); inner.id='yt-holder'; holder.appendChild(inner);
-
-      const dots=document.createElement('div'); dots.className='dots';
-      needed.forEach((s,i)=>{const d=document.createElement('button'); d.className='dot '+(i===idx?'active':(completed[i]?'done':'')); d.onclick=()=>{idx=i; renderPlayer()}; dots.appendChild(d);});
-      const timing=document.createElement('div'); timing.className='small'; timing.style.margin='6px 0'; timing.textContent=`Starts at ${fmt(start)}${typeof end!=='undefined'?' · ends at '+fmt(end):''}`;
-
-      const controls=document.createElement('div'); controls.className='hstack';
-      const btns=document.createElement('div'); btns.className='row';
-      const b1=document.createElement('button'); b1.className='btn'; b1.textContent='Prev'; b1.disabled=idx===0; b1.onclick=()=>{idx=Math.max(0,idx-1); renderPlayer();};
-      const b2=document.createElement('button'); b2.className='btn'; b2.textContent='Rewatch'; b2.onclick=()=>{ if(player){ player.seekTo(start,true); player.playVideo(); } };
-      const b3=document.createElement('button'); b3.className='btn'; b3.textContent='Next'; b3.disabled=idx===needed.length-1; b3.onclick=()=>{ idx=Math.min(needed.length-1,idx+1); renderPlayer(); };
-      btns.appendChild(b1); btns.appendChild(b2); btns.appendChild(b3); controls.appendChild(document.createElement('span')); controls.appendChild(btns);
-
-      area.appendChild(meta); area.appendChild(holder); area.appendChild(dots); area.appendChild(timing); area.appendChild(controls);
+      const holder=document.createElement('div'); holder.className='aspect';
+      const inner=document.createElement('div'); inner.id='yt-holder'; holder.appendChild(inner);
+      area.appendChild(holder);
+      markDots();
 
       player=new YT.Player('yt-holder',{
         videoId:VIDEO_ID,
@@ -416,8 +384,10 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
         events:{
           onReady:(e)=>{ e.target.playVideo(); },
           onStateChange:(e)=>{
+            if(e.data===YT.PlayerState.PLAYING){
+              if(!started[idx]){ started[idx]=true; markDots(); } // turn green once started
+            }
             if(e.data===YT.PlayerState.ENDED){
-              completed[idx]=true; updateProg();
               if(idx<needed.length-1){ idx++; renderPlayer(); }
             }
           }
@@ -427,19 +397,16 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
 
     function renderPlayer(){
       if(mode==='full'){
-        modeLabel.textContent='Full video';
         area.innerHTML='';
         const frame=document.createElement('div'); frame.className='aspect';
         frame.innerHTML=`<iframe src="${buildEmbed(undefined,undefined,false,false)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
         area.appendChild(frame);
       } else if(mode==='focused'){
-        modeLabel.textContent='Focused';
-        if(!needed.length){ area.innerHTML='<div class="small">Nice! You rated everything 4–5. Switch to Full video to watch without skips.</div>'; return; }
-        const cur=needed[idx];
+        if(!needed.length){ area.innerHTML='<div class="square" style="padding:12px">Nice! You rated everything 4–5. Switch to FULL VIDEO to watch without skips.</div>'; return; }
+        const cur=needed[idx]; markDots();
         if(ytReady){ mountAPI(cur.start,cur.end); } else { loadYT(); }
       } else {
-        modeLabel.textContent='Choose a mode';
-        area.innerHTML='<div class="small">Choose <b>Focused</b> to watch only the parts for your 1–3 words, or <b>Full video</b> to watch everything.</div>';
+        area.innerHTML='<div class="square" style="padding:12px;text-align:center">Choose <b>FOCUSED</b> to watch only the parts for your 1–3 words, or <b>FULL VIDEO</b> to watch everything.</div>';
       }
     }
 
@@ -448,8 +415,6 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-appl
 
     if(startFullImmediately){ renderPlayer(); }
   }
-
-  document.getElementById("btn-back-vid").onclick=function(){ show("summary"); }
 
 })();
 </script>
