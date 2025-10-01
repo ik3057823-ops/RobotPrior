@@ -14,12 +14,12 @@ body{
   margin:0;background:var(--bg);color:var(--fg);
   font:16px/1.6 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace
 }
-.wrap{max-width:720px;margin:0 auto;padding:64px 16px} /* larger top padding */
+.wrap{max-width:720px;margin:0 auto;padding:64px 16px}
 
 .section{display:none}
 .section.active{display:block}
 
-/* Squares with bold black borders (no shadows, no rounded corners) */
+/* Bold bordered squares, no shadows */
 .square{background:#fff;border:4px solid #000;border-radius:0}
 
 /* Welcome */
@@ -32,20 +32,27 @@ body{
 .btn-sm{padding:8px 10px;font-weight:800;font-size:14px}
 .btn-row{display:flex;gap:24px;justify-content:center;margin-top:14px}
 
+/* Coach header: progress + skip (static) */
+.header-strip{display:flex;gap:14px;align-items:center;justify-content:space-between}
+.prog-wrap{flex:1}
+.prog-text{font-weight:800}
+.progress{height:10px;background:#eef2f7;border:4px solid #000;border-radius:0;margin-top:6px;overflow:hidden}
+.progress>i{display:block;height:100%;background:var(--green);width:0}
+
 /* Coach text (larger than options) */
 .question{
   padding:14px 18px;border:4px solid #000;background:#fff;
-  font-size:22px;font-weight:800;margin:16px 0 12px;text-align:center
+  font-size:22px;font-weight:800;margin:18px 0 12px;text-align:center
 }
 
 /* Options: black rectangles, centered, narrower width */
-.options{display:grid;gap:14px;justify-items:center;margin:18px 0} /* extra space above & below options */
+.options{display:grid;gap:14px;justify-items:center;margin:18px 0}
 .choice{
   display:block;text-align:center;background:#000;color:#fff;border:4px solid #000;border-radius:0;
   padding:16px 14px;opacity:0;transform:translateY(8px);width:100%;max-width:520px
 }
-/* options use default (non-monospace) font per request */
-.choice,.choice *{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+/* options now use the same (question) font */
+.choice,.choice *{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
 .choice.show{opacity:1;transform:none;transition:opacity .55s ease, transform .55s ease}
 .choice.correct{outline:4px solid var(--green)}
 .choice.wrong{outline:4px solid var(--red)}
@@ -58,7 +65,7 @@ body{
 .pill.orange{background:#fff3e8;border-color:#000}
 .pill.green{background:#e9fbea;border-color:#000}
 
-.dots{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.dots{display:flex;gap:10px;flex-wrap:wrap}
 .dot{width:50px;height:12px;background:#cbd5e1;border:4px solid #000;border-radius:0}
 .dot.active{background:var(--orange)}
 .dot.done{background:var(--green)}
@@ -67,10 +74,13 @@ body{
 .aspect iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .spacer{height:32px}
 
-/* small links under word box (Focused/Full) */
-.mode-links{display:flex;gap:12px;align-items:center;margin:8px 0 6px}
-.mode-link{font-weight:800;cursor:pointer;border:4px solid #000;padding:6px 8px;background:#fff}
-.mode-link.active{background:#000;color:#fff}
+/* mode buttons (outside word box) */
+.mode-controls{display:flex;gap:12px;margin:10px 0}
+.mode-btn{font-weight:800;border:4px solid #000;padding:8px 10px;background:#fff;cursor:pointer}
+.mode-btn.active{background:#000;color:#fff}
+
+/* under-video row: dots (left) + nav buttons (right) */
+.video-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
 </style>
 </head>
 <body>
@@ -79,7 +89,9 @@ body{
   <!-- Screen 0: Welcome -->
   <div class="section active" id="sec-welcome">
     <div class="center-col">
-      <div class="robot-box"><img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot.png"/></div>
+      <div class="robot-box">
+        <img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot%203.png"/>
+      </div>
       <div class="bubble" id="welcome-typed"></div>
       <div id="welcome-buttons" class="btn-row" style="visibility:hidden">
         <button class="btn btn-lg" id="btn-skip">SKIP</button>
@@ -88,16 +100,23 @@ body{
     </div>
   </div>
 
-  <!-- Screen 1: Coach-guided assessment (no robot here) -->
+  <!-- Screen 1: Coach-guided assessment -->
   <div class="section" id="sec-coach">
+    <div class="header-strip">
+      <div class="prog-wrap">
+        <div class="prog-text">Progress: <span id="coach-progress">0/5</span></div>
+        <div class="progress"><i id="prog-bar"></i></div>
+      </div>
+      <button class="btn btn-sm" id="coach-skip">SKIP</button>
+    </div>
+
     <div class="question" id="coach-bubble"></div>
     <div id="coach-area"></div>
-    <div class="square" style="padding:10px;margin-top:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span>Progress: <b id="coach-progress">0/5</b></span>
-        <button class="btn btn-sm" id="coach-skip">SKIP</button>
-      </div>
+
+    <div class="btn-row" id="next-row" style="margin-top:8px">
+      <button class="btn btn-sm" id="btn-next-word" disabled>NEXT</button>
     </div>
+
     <div class="spacer"></div>
   </div>
 
@@ -123,16 +142,24 @@ body{
     <div class="square" style="padding:12px;margin-bottom:10px">
       Words to watch:
       <span id="need-words" class="words-need" style="margin-left:8px"></span>
-      <div class="mode-links">
-        <span class="mode-link active" id="link-focused">FOCUSED</span>
-        <span class="mode-link" id="link-full">FULL VIDEO</span>
-      </div>
+    </div>
+
+    <div class="mode-controls">
+      <span class="mode-btn active" id="link-focused">FOCUSED</span>
+      <span class="mode-btn" id="link-full">FULL VIDEO</span>
     </div>
 
     <div id="video-area"></div>
 
-    <!-- dots under the video with extra bottom padding so they never touch -->
-    <div class="dots" id="seg-dots"></div>
+    <div class="video-footer">
+      <div class="dots" id="seg-dots"></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-sm" id="btn-prev">PREVIOUS</button>
+        <button class="btn btn-sm" id="btn-rewatch">REWATCH</button>
+        <button class="btn btn-sm" id="btn-next">NEXT</button>
+      </div>
+    </div>
+
     <div class="spacer"></div>
   </div>
 </div>
@@ -218,7 +245,7 @@ body{
       fb:"You order/get a takeaway; takeaway menu; leftover takeaway."};
   }
 
-  /* ---------- Typing + pacing (slower) ---------- */
+  /* ---------- Typing + pacing ---------- */
   let typingTimers=[];
   function typeText(el, text, speed){
     typingTimers.forEach(clearTimeout); typingTimers=[];
@@ -231,9 +258,9 @@ body{
   const wait = (ms)=>new Promise(r=>setTimeout(r,ms));
 
   /* ---------- State ---------- */
-  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v6"))}catch(e){ratings=null}
+  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v7"))}catch(e){ratings=null}
   if(!ratings){ratings={}; WORDS.forEach(w=>ratings[w]=0)}
-  function save(){ try{localStorage.setItem("food-coach-ratings-v6",JSON.stringify(ratings))}catch(e){} }
+  function save(){ try{localStorage.setItem("food-coach-ratings-v7",JSON.stringify(ratings))}catch(e){} }
 
   var S={welcome:document.getElementById("sec-welcome"), coach:document.getElementById("sec-coach"), summary:document.getElementById("sec-summary"), video:document.getElementById("sec-video")};
   function show(id){ Object.values(S).forEach(x=>x.classList.remove("active")); S[id].classList.add("active"); }
@@ -258,13 +285,21 @@ body{
   var bubble=document.getElementById("coach-bubble");
   var area=document.getElementById("coach-area");
   var prog=document.getElementById("coach-progress");
+  var progBar=document.getElementById("prog-bar");
   document.getElementById("coach-skip").onclick=function(){ renderVideo(true); show("video"); };
+  const nextBtn=document.getElementById("btn-next-word");
 
   let optionTimers=[];
   function clearOptionTimers(){ optionTimers.forEach(clearTimeout); optionTimers=[]; }
+  function updateProgress(){
+    const rated=Object.values(ratings).filter(v=>v>0).length;
+    prog.textContent=`${rated}/${WORDS.length}`;
+    progBar.style.width=(rated/WORDS.length*100)+"%";
+  }
 
   async function startCoach(){
-    coachIdx=0; prog.textContent="0/"+WORDS.length; area.innerHTML="";
+    coachIdx=0; area.innerHTML=""; updateProgress();
+    nextBtn.disabled=true;
     await wait(600);
     await typeText(bubble, "We’ll go word by word. Tell me how well you know each one.", 38);
     await wait(800);
@@ -274,7 +309,7 @@ body{
   async function renderCoach(){
     clearOptionTimers();
     area.innerHTML="";
-    prog.textContent=coachIdx+"/"+WORDS.length;
+    nextBtn.disabled=true;
     if(coachIdx>=WORDS.length){ showSummary(); return; }
     const w=WORDS[coachIdx];
     await wait(600);
@@ -290,16 +325,18 @@ body{
       list.appendChild(b);
       optionTimers.push(setTimeout(()=>b.classList.add("show"), 420*i + 320));
     });
-  }
 
-  function nextWord(){ coachIdx++; prog.textContent=coachIdx+"/"+WORDS.length; renderCoach(); }
+    nextBtn.onclick=()=>{ coachIdx++; renderCoach(); };
+  }
 
   async function handleLevel(word, level, listEl){
     clearOptionTimers();
+    nextBtn.disabled=true;
     if(level<=3){
-      ratings[word]=level; save();
-      await wait(400); await typeText(bubble, "Thanks—got it.", 34);
-      await wait(700); nextWord(); return;
+      ratings[word]=level; save(); updateProgress();
+      await wait(400); await typeText(bubble, "Thanks—got it. Click NEXT.", 34);
+      nextBtn.disabled=false;
+      return;
     }
     // Hide level options first, then ask challenge question
     listEl.innerHTML="";
@@ -317,15 +354,14 @@ body{
         [...list.children].forEach(x=>x.disabled=true);
         if(i===Q.a){
           b.classList.add("correct");
-          ratings[word]=level; save();
-          await wait(400); await typeText(bubble, "Nice use! Moving on.", 32);
-          await wait(700); nextWord();
+          ratings[word]=level; save(); updateProgress();
+          await wait(400); await typeText(bubble, "Nice use! Click NEXT.", 32);
         }else{
           b.classList.add("wrong");
-          await wait(400); await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb}`, 32);
-          ratings[word]=3; save();
-          await wait(800); nextWord();
+          await wait(400); await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb} Click NEXT.`, 32);
+          ratings[word]=3; save(); updateProgress();
         }
+        nextBtn.disabled=false;
       };
       list.appendChild(b);
       optionTimers.push(setTimeout(()=>b.classList.add("show"), 420*i + 320));
@@ -341,7 +377,7 @@ body{
       const lvl=ratings[w]||1;
       const chip=document.createElement("span");
       chip.className="pill " + (lvl>=4 ? "green":"orange");
-      chip.textContent=w;  // no numbers shown
+      chip.textContent=w;  // no numbers
       if(lvl>=4){ strong.appendChild(chip); } else { practice.appendChild(chip); }
     });
   }
@@ -371,7 +407,7 @@ body{
     let idx=0, started=new Array(needed.length).fill(false); // turn green when started
 
     // Build static dots once
-    needed.forEach((s,i)=>{const d=document.createElement('button'); d.className='dot'; dotsHost.appendChild(d);});
+    needed.forEach(()=>{const d=document.createElement('button'); d.className='dot'; dotsHost.appendChild(d);});
 
     let ytReady=false, player=null;
     function loadYT(){ if(window.YT&&window.YT.Player){onReady();return} const tag=document.createElement('script'); tag.src='https://www.youtube.com/iframe_api'; document.body.appendChild(tag); window.onYouTubeIframeAPIReady=onReady; }
@@ -387,18 +423,7 @@ body{
       area.innerHTML='';
       const holder=document.createElement('div'); holder.className='aspect';
       const inner=document.createElement('div'); inner.id='yt-holder'; holder.appendChild(inner);
-
-      // bottom-right controls
-      const ctrls=document.createElement('div');
-      ctrls.style.display='flex'; ctrls.style.justifyContent='flex-end'; ctrls.style.gap='10px';
-      ctrls.style.marginTop='10px';
-      const bPrev=document.createElement('button'); bPrev.className='btn btn-sm'; bPrev.textContent='PREVIOUS';
-      const bRew=document.createElement('button'); bRew.className='btn btn-sm'; bRew.textContent='REWATCH';
-      const bNext=document.createElement('button'); bNext.className='btn btn-sm'; bNext.textContent='NEXT';
-      ctrls.appendChild(bPrev); ctrls.appendChild(bRew); ctrls.appendChild(bNext);
-
       area.appendChild(holder);
-      area.appendChild(ctrls);
       markDots();
 
       player=new YT.Player('yt-holder',{
@@ -417,10 +442,10 @@ body{
         }
       });
 
-      // wire controls
-      bPrev.onclick=()=>{ if(mode==='focused'){ idx=Math.max(0,idx-1); renderPlayer(); } };
-      bRew.onclick=()=>{ if(player){ if(mode==='focused'){ player.seekTo(start,true); } player.playVideo(); } };
-      bNext.onclick=()=>{ if(mode==='focused'){ idx=Math.min(needed.length-1,idx+1); renderPlayer(); } };
+      // nav buttons (same line with dots)
+      document.getElementById('btn-prev').onclick=()=>{ if(mode==='focused'){ idx=Math.max(0,idx-1); renderPlayer(); } };
+      document.getElementById('btn-rewatch').onclick=()=>{ if(player){ if(mode==='focused'){ player.seekTo(start,true); } player.playVideo(); } };
+      document.getElementById('btn-next').onclick=()=>{ if(mode==='focused'){ idx=Math.min(needed.length-1,idx+1); renderPlayer(); } };
     }
 
     function renderPlayer(){
@@ -441,13 +466,17 @@ body{
       }
     }
 
-    // Links under word box (left, above video)
+    // mode buttons outside the word box
     document.getElementById('link-focused').onclick=()=>{ mode='focused'; renderPlayer(); };
     document.getElementById('link-full').onclick=()=>{ mode='full'; renderPlayer(); };
 
-    // Requirement 9: show video immediately (focused auto-play)
+    // Show video immediately (focused autoplay by default)
+    if(!startFullImmediately) mode='focused';
     renderPlayer();
   }
+
+  // Navigation to video from other screens
+  document.getElementById("btn-next-sum").onclick=function(){ renderVideo(false); show("video"); };
 
 })();
 </script>
