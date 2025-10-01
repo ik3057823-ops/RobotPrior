@@ -6,13 +6,16 @@
 <title>Food Vocabulary – Coach + Adaptive Video</title>
 <style>
 :root{
-  --bg:#ffffff;--fg:#000;--muted:#475569;--muted2:#64748b;
+  --bg:#ffffff;--fg:#000;
   --green:#16a34a;--red:#dc2626;--orange:#ea580c;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.6 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
-.wrap{max-width:720px;margin:0 auto;padding:40px 16px}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.6 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace
+}
+.wrap{max-width:720px;margin:0 auto;padding:64px 16px} /* larger top padding */
+
 .section{display:none}
 .section.active{display:block}
 
@@ -30,14 +33,20 @@ body{margin:0;background:var(--bg);color:var(--fg);
 .btn-row{display:flex;gap:24px;justify-content:center;margin-top:14px}
 
 /* Coach text (larger than options) */
-.question{padding:12px 14px;border:4px solid #000;background:#fff;
-  font-size:22px;font-weight:800;margin:12px 0 10px;text-align:center}
+.question{
+  padding:14px 18px;border:4px solid #000;background:#fff;
+  font-size:22px;font-weight:800;margin:16px 0 12px;text-align:center
+}
 
 /* Options: black rectangles, centered, narrower width */
-.options{display:grid;gap:12px;justify-items:center}
-.choice{display:block;text-align:center;background:#000;color:#fff;border:4px solid #000;border-radius:0;
-  padding:14px 12px;opacity:0;transform:translateY(8px);width:100%;max-width:560px}
-.choice.show{opacity:1;transform:none;transition:opacity .45s ease, transform .45s ease}
+.options{display:grid;gap:14px;justify-items:center;margin:18px 0} /* extra space above & below options */
+.choice{
+  display:block;text-align:center;background:#000;color:#fff;border:4px solid #000;border-radius:0;
+  padding:16px 14px;opacity:0;transform:translateY(8px);width:100%;max-width:520px
+}
+/* options use default (non-monospace) font per request */
+.choice,.choice *{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+.choice.show{opacity:1;transform:none;transition:opacity .55s ease, transform .55s ease}
 .choice.correct{outline:4px solid var(--green)}
 .choice.wrong{outline:4px solid var(--red)}
 .choice-title{font-weight:900;margin-bottom:6px;font-size:17px}
@@ -46,15 +55,22 @@ body{margin:0;background:var(--bg);color:var(--fg);
 /* Chips and progress dots */
 .words-need{display:flex;gap:8px;flex-wrap:wrap}
 .pill{display:inline-block;background:#fff;border:4px solid #000;border-radius:0;padding:6px 10px;font-size:13px;color:#111}
-.dots{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.pill.orange{background:#fff3e8;border-color:#000}
+.pill.green{background:#e9fbea;border-color:#000}
+
+.dots{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .dot{width:50px;height:12px;background:#cbd5e1;border:4px solid #000;border-radius:0}
 .dot.active{background:var(--orange)}
 .dot.done{background:var(--green)}
 
-/* Video */
-.aspect{position:relative;padding-top:56.25%;background:#000;overflow:hidden;border:4px solid #000;border-radius:0}
+.aspect{position:relative;padding-top:56.25%;background:#000;overflow:hidden;border:4px solid #000;border-radius:0;margin-top:8px}
 .aspect iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.spacer{height:28px}
+.spacer{height:32px}
+
+/* small links under word box (Focused/Full) */
+.mode-links{display:flex;gap:12px;align-items:center;margin:8px 0 6px}
+.mode-link{font-weight:800;cursor:pointer;border:4px solid #000;padding:6px 8px;background:#fff}
+.mode-link.active{background:#000;color:#fff}
 </style>
 </head>
 <body>
@@ -76,7 +92,7 @@ body{margin:0;background:var(--bg);color:var(--fg);
   <div class="section" id="sec-coach">
     <div class="question" id="coach-bubble"></div>
     <div id="coach-area"></div>
-    <div class="square" style="padding:10px;margin-top:8px">
+    <div class="square" style="padding:10px;margin-top:14px">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <span>Progress: <b id="coach-progress">0/5</b></span>
         <button class="btn btn-sm" id="coach-skip">SKIP</button>
@@ -89,12 +105,12 @@ body{margin:0;background:var(--bg);color:var(--fg);
   <div class="section" id="sec-summary">
     <div class="question">Your Snapshot</div>
     <div class="square" style="padding:12px;margin-bottom:12px">
-      Practice next (1–3): <span id="list-practice" class="words-need" style="margin-left:8px"></span>
+      Practice next: <span id="list-practice" class="words-need" style="margin-left:8px"></span>
     </div>
     <div class="square" style="padding:12px">
-      Already strong (4–5): <span id="list-strong" class="words-need" style="margin-left:8px"></span>
+      Already strong: <span id="list-strong" class="words-need" style="margin-left:8px"></span>
     </div>
-    <div class="btn-row" style="margin-top:16px">
+    <div class="btn-row" style="margin-top:18px">
       <button class="btn btn-sm" id="btn-next-sum">NEXT</button>
     </div>
     <div class="spacer"></div>
@@ -104,24 +120,19 @@ body{margin:0;background:var(--bg);color:var(--fg);
   <div class="section" id="sec-video">
     <div class="question">Targeted Video Practice</div>
 
-    <div class="square" style="padding:12px;margin-bottom:12px">
-      Words to watch: <span id="need-words" class="words-need" style="margin-left:8px"></span>
+    <div class="square" style="padding:12px;margin-bottom:10px">
+      Words to watch:
+      <span id="need-words" class="words-need" style="margin-left:8px"></span>
+      <div class="mode-links">
+        <span class="mode-link active" id="link-focused">FOCUSED</span>
+        <span class="mode-link" id="link-full">FULL VIDEO</span>
+      </div>
     </div>
 
-    <!-- reserved space where progress text used to be (kept empty intentionally) -->
-    <div class="spacer"></div>
-
-    <div style="margin-top:8px" id="video-area"></div>
+    <div id="video-area"></div>
 
     <!-- dots under the video with extra bottom padding so they never touch -->
     <div class="dots" id="seg-dots"></div>
-    <div class="spacer"></div>
-
-    <div class="btn-row">
-      <button class="btn btn-sm" id="btn-focused">FOCUSED</button>
-      <button class="btn btn-sm" id="btn-full">FULL VIDEO</button>
-    </div>
-
     <div class="spacer"></div>
   </div>
 </div>
@@ -207,7 +218,7 @@ body{margin:0;background:var(--bg);color:var(--fg);
       fb:"You order/get a takeaway; takeaway menu; leftover takeaway."};
   }
 
-  /* ---------- Typing + pacing ---------- */
+  /* ---------- Typing + pacing (slower) ---------- */
   let typingTimers=[];
   function typeText(el, text, speed){
     typingTimers.forEach(clearTimeout); typingTimers=[];
@@ -220,9 +231,9 @@ body{margin:0;background:var(--bg);color:var(--fg);
   const wait = (ms)=>new Promise(r=>setTimeout(r,ms));
 
   /* ---------- State ---------- */
-  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v5"))}catch(e){ratings=null}
+  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v6"))}catch(e){ratings=null}
   if(!ratings){ratings={}; WORDS.forEach(w=>ratings[w]=0)}
-  function save(){ try{localStorage.setItem("food-coach-ratings-v5",JSON.stringify(ratings))}catch(e){} }
+  function save(){ try{localStorage.setItem("food-coach-ratings-v6",JSON.stringify(ratings))}catch(e){} }
 
   var S={welcome:document.getElementById("sec-welcome"), coach:document.getElementById("sec-coach"), summary:document.getElementById("sec-summary"), video:document.getElementById("sec-video")};
   function show(id){ Object.values(S).forEach(x=>x.classList.remove("active")); S[id].classList.add("active"); }
@@ -230,13 +241,13 @@ body{margin:0;background:var(--bg);color:var(--fg);
   /* ---------- Welcome ---------- */
   (async function initWelcome(){
     const tgt=document.getElementById("welcome-typed");
-    await wait(250);
+    await wait(500);
     await typeText(
       tgt,
       "Hi! I’m your vocabulary coach. We’ll quickly check how well you know five food words, then build a short video just for you. Click START to take a quick chat-check, or SKIP to jump straight to the full video.",
-      28
+      40
     );
-    await wait(250);
+    await wait(600);
     document.getElementById("welcome-buttons").style.visibility="visible";
   })();
   document.getElementById("btn-start").onclick = () => { show("coach"); startCoach(); };
@@ -254,9 +265,9 @@ body{margin:0;background:var(--bg);color:var(--fg);
 
   async function startCoach(){
     coachIdx=0; prog.textContent="0/"+WORDS.length; area.innerHTML="";
-    await wait(350);
-    await typeText(bubble, "We’ll go word by word. Tell me how well you know each one.", 30);
-    await wait(500);
+    await wait(600);
+    await typeText(bubble, "We’ll go word by word. Tell me how well you know each one.", 38);
+    await wait(800);
     renderCoach();
   }
 
@@ -266,9 +277,9 @@ body{margin:0;background:var(--bg);color:var(--fg);
     prog.textContent=coachIdx+"/"+WORDS.length;
     if(coachIdx>=WORDS.length){ showSummary(); return; }
     const w=WORDS[coachIdx];
-    await wait(350);
-    await typeText(bubble, `How well do you know “${w}”?`, 28);
-    await wait(450);
+    await wait(600);
+    await typeText(bubble, `How well do you know the word “${w}”?`, 36);
+    await wait(800);
 
     const list=document.createElement("div"); list.className="options"; area.appendChild(list);
     LEVELS.forEach((L, i)=>{
@@ -277,7 +288,7 @@ body{margin:0;background:var(--bg);color:var(--fg);
       b.innerHTML = `<div class="choice-title">${L.v} · ${L.title}</div><div class="choice-desc">${L.desc}</div>`;
       b.onclick=()=>handleLevel(w, L.v, list);
       list.appendChild(b);
-      optionTimers.push(setTimeout(()=>b.classList.add("show"), 320*i + 260));
+      optionTimers.push(setTimeout(()=>b.classList.add("show"), 420*i + 320));
     });
   }
 
@@ -287,16 +298,16 @@ body{margin:0;background:var(--bg);color:var(--fg);
     clearOptionTimers();
     if(level<=3){
       ratings[word]=level; save();
-      await wait(250); await typeText(bubble, "Thanks—got it.", 28);
-      await wait(400); nextWord(); return;
+      await wait(400); await typeText(bubble, "Thanks—got it.", 34);
+      await wait(700); nextWord(); return;
     }
     // Hide level options first, then ask challenge question
     listEl.innerHTML="";
-    await wait(250);
+    await wait(450);
     const isColloc = level===5;
     const Q = isColloc ? collocQ(word) : usageQ(word);
-    await typeText(bubble, "Quick check first. "+Q.q, 26);
-    await wait(350);
+    await typeText(bubble, "Quick check first. "+Q.q, 34);
+    await wait(600);
 
     const list=document.createElement("div"); list.className="options"; area.appendChild(list);
     Q.opts.forEach((opt, i)=>{
@@ -307,17 +318,17 @@ body{margin:0;background:var(--bg);color:var(--fg);
         if(i===Q.a){
           b.classList.add("correct");
           ratings[word]=level; save();
-          await wait(250); await typeText(bubble, "Nice use! Moving on.", 26);
-          await wait(420); nextWord();
+          await wait(400); await typeText(bubble, "Nice use! Moving on.", 32);
+          await wait(700); nextWord();
         }else{
           b.classList.add("wrong");
-          await wait(250); await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb}`, 26);
+          await wait(400); await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb}`, 32);
           ratings[word]=3; save();
-          await wait(450); nextWord();
+          await wait(800); nextWord();
         }
       };
       list.appendChild(b);
-      optionTimers.push(setTimeout(()=>b.classList.add("show"), 320*i + 260));
+      optionTimers.push(setTimeout(()=>b.classList.add("show"), 420*i + 320));
     });
   }
 
@@ -329,7 +340,8 @@ body{margin:0;background:var(--bg);color:var(--fg);
     WORDS.forEach(w=>{
       const lvl=ratings[w]||1;
       const chip=document.createElement("span");
-      chip.className="pill"; chip.textContent=`${w} · ${lvl}`;
+      chip.className="pill " + (lvl>=4 ? "green":"orange");
+      chip.textContent=w;  // no numbers shown
       if(lvl>=4){ strong.appendChild(chip); } else { practice.appendChild(chip); }
     });
   }
@@ -351,11 +363,11 @@ body{margin:0;background:var(--bg);color:var(--fg);
     const needed=segs.filter(s=>s.level>=1&&s.level<=3);
 
     const needWords=document.getElementById("need-words"); needWords.innerHTML="";
-    needed.forEach(s=>{const e=document.createElement("span"); e.className="pill"; e.textContent=s.word; needWords.appendChild(e);});
+    needed.forEach(s=>{const e=document.createElement("span"); e.className="pill orange"; e.textContent=s.word; needWords.appendChild(e);});
 
     const area=document.getElementById("video-area");
     const dotsHost=document.getElementById("seg-dots"); dotsHost.innerHTML="";
-    let mode = startFullImmediately ? 'full' : 'none';
+    let mode = startFullImmediately ? 'full' : 'focused';
     let idx=0, started=new Array(needed.length).fill(false); // turn green when started
 
     // Build static dots once
@@ -363,57 +375,78 @@ body{margin:0;background:var(--bg);color:var(--fg);
 
     let ytReady=false, player=null;
     function loadYT(){ if(window.YT&&window.YT.Player){onReady();return} const tag=document.createElement('script'); tag.src='https://www.youtube.com/iframe_api'; document.body.appendChild(tag); window.onYouTubeIframeAPIReady=onReady; }
-    function onReady(){ ytReady=true; if(mode==='focused') renderPlayer(); }
+    function onReady(){ ytReady=true; renderPlayer(); }
 
     function markDots(){
       const dots=[...dotsHost.children];
       dots.forEach((d,i)=>{ d.classList.remove('active'); if(started[i]) d.classList.add('done'); });
-      if(dots[idx]) dots[idx].classList.add('active');
+      if(mode==='focused' && dots[idx]) dots[idx].classList.add('active');
     }
 
-    function mountAPI(start,end){
+    function mountAPI(start,end,auto){
       area.innerHTML='';
       const holder=document.createElement('div'); holder.className='aspect';
       const inner=document.createElement('div'); inner.id='yt-holder'; holder.appendChild(inner);
+
+      // bottom-right controls
+      const ctrls=document.createElement('div');
+      ctrls.style.display='flex'; ctrls.style.justifyContent='flex-end'; ctrls.style.gap='10px';
+      ctrls.style.marginTop='10px';
+      const bPrev=document.createElement('button'); bPrev.className='btn btn-sm'; bPrev.textContent='PREVIOUS';
+      const bRew=document.createElement('button'); bRew.className='btn btn-sm'; bRew.textContent='REWATCH';
+      const bNext=document.createElement('button'); bNext.className='btn btn-sm'; bNext.textContent='NEXT';
+      ctrls.appendChild(bPrev); ctrls.appendChild(bRew); ctrls.appendChild(bNext);
+
       area.appendChild(holder);
+      area.appendChild(ctrls);
       markDots();
 
       player=new YT.Player('yt-holder',{
         videoId:VIDEO_ID,
         playerVars:{start:start,end:end,controls:0,rel:0,fs:0,modestbranding:1,disablekb:1},
         events:{
-          onReady:(e)=>{ e.target.playVideo(); },
+          onReady:(e)=>{ if(auto) e.target.playVideo(); },
           onStateChange:(e)=>{
             if(e.data===YT.PlayerState.PLAYING){
-              if(!started[idx]){ started[idx]=true; markDots(); } // turn green once started
+              if(mode==='focused' && !started[idx]){ started[idx]=true; markDots(); }
             }
-            if(e.data===YT.PlayerState.ENDED){
+            if(e.data===YT.PlayerState.ENDED && mode==='focused'){
               if(idx<needed.length-1){ idx++; renderPlayer(); }
             }
           }
         }
       });
+
+      // wire controls
+      bPrev.onclick=()=>{ if(mode==='focused'){ idx=Math.max(0,idx-1); renderPlayer(); } };
+      bRew.onclick=()=>{ if(player){ if(mode==='focused'){ player.seekTo(start,true); } player.playVideo(); } };
+      bNext.onclick=()=>{ if(mode==='focused'){ idx=Math.min(needed.length-1,idx+1); renderPlayer(); } };
     }
 
     function renderPlayer(){
+      document.getElementById('link-focused').classList.toggle('active',mode==='focused');
+      document.getElementById('link-full').classList.toggle('active',mode==='full');
       if(mode==='full'){
         area.innerHTML='';
         const frame=document.createElement('div'); frame.className='aspect';
-        frame.innerHTML=`<iframe src="${buildEmbed(undefined,undefined,false,false)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+        frame.innerHTML=`<iframe src="${buildEmbed(undefined,undefined,false,true)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
         area.appendChild(frame);
-      } else if(mode==='focused'){
-        if(!needed.length){ area.innerHTML='<div class="square" style="padding:12px">Nice! You rated everything 4–5. Switch to FULL VIDEO to watch without skips.</div>'; return; }
-        const cur=needed[idx]; markDots();
-        if(ytReady){ mountAPI(cur.start,cur.end); } else { loadYT(); }
       } else {
-        area.innerHTML='<div class="square" style="padding:12px;text-align:center">Choose <b>FOCUSED</b> to watch only the parts for your 1–3 words, or <b>FULL VIDEO</b> to watch everything.</div>';
+        if(!needed.length){
+          area.innerHTML='<div class="square" style="padding:12px">Nice! You rated everything 4–5. Switch to FULL VIDEO to watch without skips.</div>';
+          return;
+        }
+        const cur=needed[idx]; markDots();
+        if(ytReady){ mountAPI(cur.start,cur.end,true); } else { loadYT(); }
       }
     }
 
-    document.getElementById('btn-full').onclick=()=>{ mode='full'; renderPlayer(); };
-    document.getElementById('btn-focused').onclick=()=>{ mode='focused'; renderPlayer(); };
+    // Links under word box (left, above video)
+    document.getElementById('link-focused').onclick=()=>{ mode='focused'; renderPlayer(); };
+    document.getElementById('link-full').onclick=()=>{ mode='full'; renderPlayer(); };
 
-    if(startFullImmediately){ renderPlayer(); }
+    // Requirement 9: show video immediately (focused auto-play)
+    renderPlayer();
   }
 
 })();
