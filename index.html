@@ -3,101 +3,82 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Food Vocabulary – Coach Assessment + Adaptive Video</title>
+<title>Food Vocabulary – Coach + Adaptive Video</title>
 <style>
 :root{
-  --bg:#ffffff;--fg:#0f172a;--muted:#475569;--muted2:#64748b;--border:#e2e8f0;
-  --accent:#0f172a;--pill:#f1f5f9;--green-dark:#16a34a;--orange-dark:#ea580c
+  --bg:#ffffff;--fg:#0f172a;--muted:#475569;--muted2:#64748b;--accent:#0f172a;
+  --pill:#f1f5f9;--green:#16a34a;--red:#dc2626;--orange:#ea580c;--dark:#0b1324
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-.wrap{max-width:900px;margin:0 auto;padding:48px 20px}
-.h1{font-size:22px;font-weight:700;margin:0 0 10px}
+.wrap{max-width:640px;margin:0 auto;padding:56px 18px}
+.h1{font-size:20px;font-weight:700;margin:0 0 10px}
 .small{font-size:12px;color:var(--muted2)}
-.card{border:1px solid var(--border);border-radius:14px;background:#fff}
-.card>.c{padding:16px}
-.btn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
-.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn.success{background:var(--green-dark);color:#fff;border-color:var(--green-dark)}
-.btn:disabled{opacity:.55;cursor:not-allowed}
-.row{display:flex;gap:12px;align-items:center}
-.grid{display:grid;gap:12px}
-.hstack{display:flex;justify-content:space-between;align-items:center}
-.pill{display:inline-block;background:var(--pill);border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:13px;color:var(--muted2)}
+.center{text-align:center}
 .section{display:none}
 .section.active{display:block}
-.progress{height:10px;background:#eef2f7;border-radius:999px;overflow:hidden}
-.progress>i{display:block;height:100%;background:var(--green-dark);width:0}
-.kv{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
-.badge{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:2px 8px}
-.aspect{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000}
+.card{background:#fff;border:none;border-radius:0}
+.card>.c{padding:0}
+.robot{display:grid;place-items:center;margin:0 auto 14px}
+.robot img{width:110px;height:110px;object-fit:contain}
+.bubble{background:#fff;border:none;border-radius:0;padding:16px;margin:0 0 4px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.buttons{display:flex;gap:10px;justify-content:center}
+.btn{border:1px solid #dce1ea;background:#fff;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.dark{background:var(--dark);color:#fff;border-color:var(--dark)}
+.btn.success{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.ghost{background:transparent}
+.grid{display:grid;gap:12px}
+.choice{display:block;width:100%;text-align:left;background:var(--dark);color:#fff;border:0;border-radius:0;padding:14px 14px;opacity:0;transform:translateY(6px)}
+.choice.show{opacity:1;transform:none;transition:opacity .25s ease, transform .25s ease}
+.choice.correct{background:linear-gradient(0deg, rgba(22,163,74,.15), rgba(22,163,74,.15)), var(--dark);outline:2px solid var(--green)}
+.choice.wrong{background:linear-gradient(0deg, rgba(220,38,38,.15), rgba(220,38,38,.15)), var(--dark);outline:2px solid var(--red)}
+.choice-title{font-weight:800;margin-bottom:4px}
+.progress{height:8px;background:#eef2f7;overflow:hidden}
+.progress>i{display:block;height:100%;background:var(--green);width:0}
+.words-need{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-block;background:var(--pill);border:1px solid #e2e8f0;border-radius:999px;padding:4px 10px;font-size:13px;color:var(--muted2)}
+.hstack{display:flex;justify-content:space-between;align-items:center}
+.row{display:flex;gap:10px;align-items:center}
+.aspect{position:relative;padding-top:56.25%;background:#000;overflow:hidden}
 .aspect iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.dots{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-start;align-items:center}
-.dot{width:64px;height:16px;border-radius:999px;background:#cbd5e1;border:0}
-.dot.active{background:var(--orange-dark)}
-.dot.done{background:var(--green-dark)}
-.spacer{height:32px}
-.coach{display:grid;gap:14px}
-.avatar{width:110px;height:110px;border:4px solid #000;border-radius:8px;margin:0 auto;display:grid;place-items:center}
-.face{width:68px;height:68px;border:4px solid #000;border-radius:6px;display:grid;grid-template-rows:auto 8px;place-items:center;gap:10px;padding-top:10px}
-.eyes{display:flex;gap:14px}
-.eye{width:16px;height:16px;background:#000}
-.mouth{width:40px;height:8px;background:#000}
-.bubble{border:2px solid #000;border-radius:8px;padding:16px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;box-shadow:0 6px 0 rgba(0,0,0,.15)}
-.choice{display:block;text-align:left;width:100%}
-.ac-toggle{display:flex;align-items:center;gap:8px;cursor:pointer}
-.legend{display:grid;gap:6px;margin:0;padding-left:18px}
-.legend li{font-size:14px}
-.hidden{display:none}
-.words-need{display:flex;flex-wrap:wrap;gap:8px}
-.category-pill{border-radius:999px;padding:2px 8px;border:1px solid var(--border);font-size:12px}
-.cat-1{background:#fff}
-.cat-2{background:#fff}
-.cat-3{background:#fff}
-.cat-4{background:#fff}
-.cat-5{background:#fff}
+.dots{display:flex;gap:12px;flex-wrap:wrap}
+.dot{width:54px;height:14px;background:#cbd5e1;border:0}
+.dot.active{background:var(--orange)}
+.dot.done{background:var(--green)}
+.spacer{height:28px}
 </style>
 </head>
 <body>
 <div class="wrap">
+
+  <!-- Screen 0: Welcome -->
+  <div class="section active" id="sec-welcome">
+    <div class="robot"><img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot.png"/></div>
+    <div class="bubble" id="welcome-typed"></div>
+    <div class="buttons" style="margin-top:10px">
+      <button class="btn primary" id="btn-start">START</button>
+      <button class="btn dark" id="btn-skip">SKIP</button>
+    </div>
+  </div>
+
   <!-- Screen 1: Coach-guided assessment -->
-  <div class="section active" id="sec-coach">
-    <div class="h1">Meet your Coach</div>
-    <div class="card"><div class="c coach">
-      <div class="avatar">
-        <div class="face">
-          <div class="eyes"><div class="eye"></div><div class="eye"></div></div>
-          <div class="mouth"></div>
-        </div>
-      </div>
-      <div class="bubble" id="coach-bubble">Hi! I’ll quickly check how well you know today’s words. Ready?</div>
-      <div id="coach-area"></div>
-      <div class="card" style="margin-top:6px"><div class="c">
-        <div class="ac-toggle" id="legend-toggle">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 10l4 4 4-4" stroke="#334155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div style="font-weight:600;color:#334155">What the options mean</div>
-        </div>
-        <ol class="legend hidden" id="legend-body">
-          <li><b>1. Brand-new</b> — I haven't met this word before.</li>
-          <li><b>2. Looks familiar</b> — I've seen it, but I'm not sure.</li>
-          <li><b>3. I get it when I read</b> — I can explain the meaning.</li>
-          <li><b>4. Sentence-ready</b> — I can use it in a simple sentence.</li>
-          <li><b>5. Confident & flexible</b> — I can use it with collocations/register.</li>
-        </ol>
-      </div></div>
-      <div class="hstack">
-        <div class="small">Progress: <span id="coach-progress">0/5</span></div>
-        <button class="btn primary" id="coach-skip" title="Skip current word">Skip</button>
-      </div>
-    </div></div>
+  <div class="section" id="sec-coach">
+    <div class="robot"><img alt="Coach robot" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/robot.png"/></div>
+    <div class="bubble" id="coach-bubble"></div>
+    <div id="coach-area"></div>
+    <div class="hstack" style="margin-top:8px">
+      <div class="small">Progress: <span id="coach-progress">0/5</span></div>
+      <button class="btn" id="coach-skip">Skip word</button>
+    </div>
     <div class="spacer"></div>
   </div>
 
   <!-- Screen 2: Summary -->
   <div class="section" id="sec-summary">
     <div class="h1">Summary & Next Steps</div>
-    <div class="muted" id="summary-sub"></div>
-    <div class="grid" id="summary-list" style="margin-top:12px"></div>
+    <div class="small" id="summary-sub"></div>
+    <div id="summary-list" class="grid" style="margin-top:12px"></div>
     <div class="hstack" style="margin-top:14px">
       <button class="btn" id="btn-back-sum">Back</button>
       <button class="btn primary" id="btn-next-sum">Next</button>
@@ -105,15 +86,14 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-appl
     <div class="spacer"></div>
   </div>
 
-  <!-- Screen 3: Adaptive video (unchanged behavior from last version) -->
+  <!-- Screen 3: Adaptive video -->
   <div class="section" id="sec-video">
     <div class="h1">Targeted Video Practice</div>
-    <div class="muted">We’ll skip words you already use well (4–5). You can switch to the full video any time.</div>
+    <div class="small">We’ll play only the parts for words you rated 1–3. You can watch the full video too.</div>
 
-    <div class="card" style="margin-top:12px"><div class="c">
-      <div class="small" style="margin-bottom:6px"><b>Words to watch</b></div>
-      <div class="words-need" id="need-words"></div>
-    </div></div>
+    <div class="spacer"></div>
+    <div class="small" style="margin-bottom:6px"><b>Words to watch</b></div>
+    <div class="words-need" id="need-words"></div>
 
     <div style="margin-top:12px">
       <div class="hstack small"><span id="seg-count">Segments completed: 0/0</span><span id="seg-pct">0%</span></div>
@@ -122,17 +102,17 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-appl
 
     <div class="hstack" style="margin-top:12px">
       <div class="row">
-        <button class="btn success" id="btn-focused"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5l11 7-11 7V5z" fill="#fff"/></svg>Focused</button>
-        <button class="btn" id="btn-full"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#0f172a" stroke-width="2"/><path d="M10 9l5 3-5 3V9z" fill="#0f172a"/></svg>Full video</button>
+        <button class="btn dark" id="btn-focused">Focused</button>
+        <button class="btn" id="btn-full">Full video</button>
       </div>
       <div class="small">Mode: <b id="mode-label">Choose a mode</b></div>
     </div>
 
-    <div class="card" style="margin-top:12px"><div class="c" id="video-area"></div></div>
+    <div style="margin-top:12px" id="video-area"></div>
 
     <div class="hstack" style="margin-top:14px">
       <button class="btn" id="btn-back-vid">Back</button>
-      <div class="small">Tip: Use focused parts first, then watch the full video.</div>
+      <div class="small">Tip: Try Focused first, then Full.</div>
     </div>
     <div class="spacer"></div>
   </div>
@@ -140,226 +120,267 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-appl
 
 <script>
 (function(){
-  /* ---------- Content & helpers ---------- */
+  /* ---------- Data ---------- */
   var WORDS=["diet","junk food","whole food","food security","takeaway"];
-  var DESCS=[
-    {v:1, label:"1 · Brand-new"},
-    {v:2, label:"2 · Looks familiar"},
-    {v:3, label:"3 · I get it when I read"},
-    {v:4, label:"4 · Sentence-ready"},
-    {v:5, label:"5 · Confident & flexible"}
+  var LEVELS=[
+    {v:1, title:"Brand-new", desc:"I haven't met this word before."},
+    {v:2, title:"Looks familiar", desc:"I've seen it, but I'm not sure."},
+    {v:3, title:"I get it when I read", desc:"I can explain the meaning."},
+    {v:4, title:"Sentence-ready", desc:"I can use it correctly in my own sentence."},
+    {v:5, title:"Confident & flexible", desc:"I can use it with natural collocations/register."}
   ];
   var starts={"diet":46,"junk food":132,"whole food":225,"food security":287,"takeaway":359};
   var VIDEO_ID="LRKlGG0oYKw";
 
-  /* Questions based on your PDF scope */
-  function usageQ(word){ // level 4 checks: sentence use
+  /* Based on your PDF’s scope: stronger checks for 4–5 */
+  function usageQ(word){ // ability to use in a sentence
     if(word==="diet"){
-      return {q:"Choose the best sentence using “diet”.", opts:[
-        "I ordered a diet to my house last night.",
-        "I try to follow a healthy diet with lots of vegetables.",
-        "I bought a new diet for my friend’s birthday."
-      ], a:1, fb:"Use “diet” for a pattern or plan of eating, e.g., a healthy/strict diet."};
+      return {q:"Pick the sentence that uses “diet” naturally and precisely.",
+      opts:[
+        "She started a strict diet to reduce sugar and processed food.",
+        "I will diet a pizza for my birthday.",
+        "The restaurant serves a delicious diet."
+      ], a:0,
+      fb:"Use “diet” for someone’s pattern of eating (strict/healthy/balanced diet)."};
     }
     if(word==="junk food"){
-      return {q:"Choose the best sentence using “junk food”.", opts:[
-        "I avoid junk food during the week.",
-        "I cooked junk food carrots for lunch.",
-        "We junk fooded at home yesterday."
-      ], a:0, fb:"“Junk food” is unhealthy but quick/easy to eat. Common verb: avoid/crave."};
+      return {q:"Pick the sentence that best shows meaning and register of “junk food”.",
+      opts:[
+        "During exam week I tend to crave junk food like chips and soda.",
+        "We planted junk food in the school garden.",
+        "I bought a junk food apple from the market."
+      ], a:0,
+      fb:"“Junk food” = highly processed, low-nutrient food (chips, soda, candy)."};
     }
     if(word==="whole food"){
-      return {q:"Choose the best sentence using “whole foods/whole food”.", opts:[
-        "I try to eat more whole foods like fresh vegetables and nuts.",
-        "I whole fooded the homework after class.",
-        "She bought a whole food chocolate bar packed with additives."
-      ], a:0, fb:"“Whole foods” are natural and unprocessed, e.g., vegetables, nuts."};
+      return {q:"Choose the sentence that reflects the idea of “whole foods”.",
+      opts:[
+        "Her meals focus on whole foods such as leafy greens, beans, and nuts.",
+        "Whole food means food with many artificial additives.",
+        "He microwaved whole food noodles with flavor powder."
+      ], a:0,
+      fb:"Whole foods are natural/minimally processed items (vegetables, legumes, nuts)."};
     }
     if(word==="food security"){
-      return {q:"Choose the best sentence using “food security”.", opts:[
-        "We increased our food security by ensuring steady access to safe, nutritious food.",
-        "I ate food security for dinner.",
-        "This sandwich is food security."
-      ], a:0, fb:"“Food security” is reliable access to enough safe, nutritious, affordable food."};
+      return {q:"Select the sentence that correctly uses “food security”.",
+      opts:[
+        "Improving storage and supply chains can increase food security in the region.",
+        "We ordered food security for lunch yesterday.",
+        "Food security is the same as food safety labels on packages."
+      ], a:0,
+      fb:"Food security = reliable access to sufficient, safe, nutritious, affordable food."};
     }
-    // takeaway
-    return {q:"Choose the best sentence using “takeaway”.", opts:[
-      "We ordered a takeaway because we were too tired to cook.",
-      "I takeawayed my homework quickly.",
-      "Takeaway means eating inside the restaurant only."
-    ], a:0, fb:"“Takeaway” is food prepared in a restaurant and taken home to eat."};
+    return {q:"Choose the sentence that uses “takeaway” naturally.",
+      opts:[
+        "We ordered a takeaway because there was no time to cook.",
+        "I takeawayed my homework before class.",
+        "Takeaway only means eating inside a restaurant."
+      ], a:0,
+      fb:"Takeaway = food you order and take away to eat elsewhere."};
   }
-  function collocQ(word){ // level 5 checks: collocations
+  function collocQ(word){ // collocations & flexible use
     if(word==="diet"){
-      return {q:"Which collocation is most natural?", opts:[
-        "strict diet","heavy diet of additives","order a diet from a restaurant"
-      ], a:0, fb:"Common collocations: healthy/balanced/strict diet; be on a diet."};
+      return {q:"Which option shows a natural collocation with “diet” and accurate meaning?",
+      opts:[
+        "be on a balanced diet for three months",
+        "order a diet from a café",
+        "finish a diet in one evening"
+      ], a:0, fb:"Common: balanced/strict/healthy diet; be on a diet; stick to a diet."};
     }
     if(word==="junk food"){
-      return {q:"Which sentence uses a natural collocation with “junk food”?", opts:[
-        "We grow junk food in the garden.",
-        "I try to avoid junk food during the week.",
-        "I process junk food into whole food."
-      ], a:1, fb:"“Avoid/crave junk food” are typical verb + noun pairs."};
+      return {q:"Which collocation fits best?",
+      opts:[
+        "avoid junk food on weekdays",
+        "cultivate junk food on a farm",
+        "compose junk food in a notebook"
+      ], a:0, fb:"Typical verbs: avoid, cut down on, crave, snack on junk food."};
     }
     if(word==="whole food"){
-      return {q:"Which is a natural phrase?", opts:[
-        "eat whole foods like nuts and fresh vegetables",
-        "avoid whole foods because they are artificial",
-        "whole foods means packaged snacks"
-      ], a:0, fb:"Natural collocations: eat whole foods; whole foods diet."};
+      return {q:"Which phrase sounds natural?",
+      opts:[
+        "eat more whole foods like oats and fresh vegetables",
+        "add artificial flavor to make whole foods",
+        "whole foods are highly processed snacks"
+      ], a:0, fb:"Natural: eat whole foods; whole-foods diet; switch to whole foods."};
     }
     if(word==="food security"){
-      return {q:"Which verb fits with “food security”?", opts:[
-        "ensure food security","taste food security","fry food security"
-      ], a:0, fb:"“Ensure/improve food security” are common patterns."};
+      return {q:"Which verb-noun pair is most appropriate?",
+      opts:[
+        "ensure food security through stable supply",
+        "taste food security at lunch",
+        "boil food security in water"
+      ], a:0, fb:"Typical verbs: ensure, improve, threaten, undermine food security."};
     }
-    return {q:"Which verb fits with “takeaway”?", opts:[
-      "order a takeaway","grow a takeaway","write a takeaway"
-    ], a:0, fb:"You “order a takeaway” from a restaurant and eat it at home."};
+    return {q:"Which collocation with “takeaway” is best?",
+      opts:[
+        "order a takeaway from the Thai place",
+        "grow a takeaway in the garden",
+        "grade a takeaway for homework"
+      ], a:0, fb:"You order a takeaway / get a takeaway; leftover takeaway, takeaway menu."};
   }
 
-  /* ---------- Persistent ratings & categories ---------- */
-  var ratings;
-  try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings"))}catch(e){ratings=null}
-  if(!ratings){ratings={}; for(var i=0;i<WORDS.length;i++){ratings[WORDS[i]]=0}}
-  function save(){try{localStorage.setItem("food-coach-ratings",JSON.stringify(ratings))}catch(e){}}
+  /* ---------- Typing utility ---------- */
+  function typeText(el, text, speed){
+    el.textContent=""; return new Promise(function(resolve){
+      let i=0; const tick=()=>{ if(i<text.length){ el.textContent+=text[i++]; setTimeout(tick, speed); } else resolve(); };
+      tick();
+    });
+  }
+
+  /* ---------- State ---------- */
+  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v2"))}catch(e){ratings=null}
+  if(!ratings){ratings={}; WORDS.forEach(w=>ratings[w]=0)}
+  function save(){ try{localStorage.setItem("food-coach-ratings-v2",JSON.stringify(ratings))}catch(e){} }
+
+  var S={welcome:document.getElementById("sec-welcome"), coach:document.getElementById("sec-coach"), summary:document.getElementById("sec-summary"), video:document.getElementById("sec-video")};
+  function show(id){ Object.values(S).forEach(x=>x.classList.remove("active")); S[id].classList.add("active"); }
+
+  /* ---------- Welcome ---------- */
+  typeText(document.getElementById("welcome-typed"),
+    "Hi! I’m your vocabulary coach. In a minute, I’ll check how well you know five food words, then build a short video just for you. Ready to try?",
+    18
+  );
+  document.getElementById("btn-start").onclick = () => { show("coach"); startCoach(); };
+  document.getElementById("btn-skip").onclick = () => { renderVideo(true); show("video"); };
 
   /* ---------- Coach flow ---------- */
   var coachIdx=0;
   var bubble=document.getElementById("coach-bubble");
   var area=document.getElementById("coach-area");
   var prog=document.getElementById("coach-progress");
-  var legendToggle=document.getElementById("legend-toggle");
-  legendToggle.onclick=function(){document.getElementById("legend-body").classList.toggle("hidden")}
-  document.getElementById("coach-skip").onclick=function(){nextWord()}
+  document.getElementById("coach-skip").onclick=function(){nextWord()};
 
-  function renderCoach(){
-    prog.textContent=coachIdx+"/"+WORDS.length;
-    if(coachIdx>=WORDS.length){
-      showSummary();
-      return;
-    }
-    var w=WORDS[coachIdx];
-    bubble.textContent="How well do you know “"+w+"”? Pick one option.";
-    area.innerHTML="";
-    var list=document.createElement("div"); list.className="grid";
-    DESCS.forEach(function(d){
-      var b=document.createElement("button");
-      b.className="btn choice";
-      b.textContent=d.label;
-      b.setAttribute("data-level",d.v);
-      b.onclick=function(){handleLevel(w,d.v)};
-      list.appendChild(b);
-    });
-    area.appendChild(list);
+  async function startCoach(){
+    coachIdx=0; prog.textContent="0/"+WORDS.length; area.innerHTML="";
+    await typeText(bubble, "Let’s begin. I’ll show a word and you tell me how well you know it.", 18);
+    setTimeout(renderCoach, 200);
   }
 
-  function handleLevel(word, level){
-    if(level<=3){ ratings[word]=level; save(); nextWord(); return; }
-    var isColloc=(level===5);
-    var Q=isColloc?collocQ(word):usageQ(word);
-    bubble.textContent="Quick check on “"+word+"”. "+Q.q;
+  async function renderCoach(){
+    prog.textContent=coachIdx+"/"+WORDS.length;
+    if(coachIdx>=WORDS.length){ showSummary(); return; }
+    const w=WORDS[coachIdx];
+    await typeText(bubble, `How well do you know “${w}”?`, 20);
+    // build options: square, dark, appear one by one
     area.innerHTML="";
-    var list=document.createElement("div"); list.className="grid";
-    Q.opts.forEach(function(opt, i){
-      var b=document.createElement("button");
-      b.className="btn choice";
-      b.textContent=opt;
-      b.onclick=function(){
-        if(i===Q.a){ ratings[word]=level; save(); bubble.textContent="Nice! Let’s keep going."; nextWord(); }
-        else{ ratings[word]=3; save(); bubble.textContent="Let’s study “"+word+"” later. "+Q.fb; nextWord(); }
+    const list=document.createElement("div"); list.className="grid"; area.appendChild(list);
+    LEVELS.forEach((L, i)=>{
+      const b=document.createElement("button");
+      b.className="choice"; b.setAttribute("data-level", L.v);
+      b.innerHTML = `<div class="choice-title">${L.v} · ${L.title}</div><div class="small" style="color:#cbd5e1">${L.desc}</div>`;
+      b.onclick=()=>handleLevel(w, L.v, b);
+      list.appendChild(b);
+      setTimeout(()=>b.classList.add("show"), 120*i + 80); // staggered fade
+    });
+  }
+
+  function nextWord(){ coachIdx++; prog.textContent=coachIdx+"/"+WORDS.length; renderCoach(); }
+
+  async function handleLevel(word, level, btnEl){
+    // levels 1–3: accept directly
+    if(level<=3){ ratings[word]=level; save(); await typeText(bubble, "Got it. Thanks!", 18); nextWord(); return; }
+    // levels 4–5: challenge
+    const isColloc = level===5;
+    const Q = isColloc ? collocQ(word) : usageQ(word);
+    await typeText(bubble, "Quick check first. "+Q.q, 18);
+    area.innerHTML="";
+    const list=document.createElement("div"); list.className="grid"; area.appendChild(list);
+
+    Q.opts.forEach((opt, i)=>{
+      const b=document.createElement("button");
+      b.className="choice"; b.innerHTML=`<div>${opt}</div>`;
+      b.onclick=async ()=>{
+        // lock others
+        [...list.children].forEach(x=>x.disabled=true);
+        if(i===Q.a){
+          b.classList.add("correct");
+          ratings[word]=level; save();
+          await typeText(bubble, "Nice use! Moving on.", 18);
+          nextWord();
+        }else{
+          b.classList.add("wrong");
+          await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb}`, 18);
+          ratings[word]=3; save(); // mark to be covered
+          nextWord();
+        }
       };
       list.appendChild(b);
+      setTimeout(()=>b.classList.add("show"), 120*i + 80);
     });
-    area.appendChild(list);
   }
 
-  function nextWord(){ coachIdx++; prog.textContent=coachIdx+"/"+WORDS.length; setTimeout(renderCoach,200); }
-
-  /* ---------- Navigation helpers ---------- */
-  var S={coach:document.getElementById("sec-coach"),summary:document.getElementById("sec-summary"),video:document.getElementById("sec-video")};
-  function show(id){for(var k in S){S[k].classList.remove("active")}S[id].classList.add("active")}
-
-  /* ---------- Summary Screen ---------- */
+  /* ---------- Summary ---------- */
   function showSummary(){
     show("summary");
-    var list=document.getElementById("summary-list"); list.innerHTML="";
-    var wrap=document.createElement("div"); wrap.className="grid";
-    WORDS.forEach(function(w){
-      var card=document.createElement("div"); card.className="card";
-      var c=document.createElement("div"); c.className="c";
-      var row=document.createElement("div"); row.className="hstack";
-      var left=document.createElement("div"); left.innerHTML='<div style="font-weight:600">'+w+'</div><div class="small">Your category</div>';
-      var cat=ratings[w]||1;
-      var right=document.createElement("div"); right.innerHTML='<span class="category-pill cat-'+cat+'"> '+cat+' </span>';
-      row.appendChild(left); row.appendChild(right); c.appendChild(row); card.appendChild(c); wrap.appendChild(card);
+    document.getElementById("summary-sub").textContent="Your categories (1–5). Words in 1–3 will be targeted in the next screen.";
+    const host=document.getElementById("summary-list"); host.innerHTML="";
+    WORDS.forEach(w=>{
+      const row=document.createElement("div");
+      row.className="hstack";
+      row.innerHTML=`<div><div style="font-weight:700">${w}</div></div><div class="pill">${ratings[w]||1}</div>`;
+      host.appendChild(row);
     });
-    list.appendChild(wrap);
-
-    document.getElementById("summary-sub").textContent="Here’s your snapshot. Words in 1–3 will be targeted in the video.";
   }
-  document.getElementById("btn-back-sum").onclick=function(){coachIdx=0; show("coach"); renderCoach()}
-  document.getElementById("btn-next-sum").onclick=function(){renderVideo(); show("video")}
+  document.getElementById("btn-back-sum").onclick=function(){ show("coach"); startCoach(); }
+  document.getElementById("btn-next-sum").onclick=function(){ renderVideo(false); show("video"); }
 
-  /* ---------- Video Screen (same logic as your latest working version) ---------- */
+  /* ---------- Video ---------- */
   function buildEmbed(start,end,controls,autoplay){
-    var p=new URLSearchParams({rel:"0",modestbranding:"1",controls:String(controls?1:0),disablekb:"1",fs:"0"});
-    if(typeof start!=="undefined")p.set("start",String(start));
-    if(typeof end!=="undefined")p.set("end",String(end));
+    const p=new URLSearchParams({rel:"0",modestbranding:"1",controls:String(controls?1:0),disablekb:"1",fs:"0"});
+    if(typeof start!=="undefined") p.set("start",String(start));
+    if(typeof end!=="undefined") p.set("end",String(end));
     p.set("autoplay",autoplay?"1":"0");
-    return 'https://www.youtube-nocookie.com/embed/'+VIDEO_ID+'?'+p.toString();
+    return `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?${p.toString()}`;
   }
-  function fmt(t){var m=('0'+Math.floor(t/60)).slice(-2);var s=('0'+(t%60)).slice(-2);return m+':'+s}
+  function fmt(t){const m=('0'+Math.floor(t/60)).slice(-2);const s=('0'+(t%60)).slice(-2);return `${m}:${s}`;}
 
-  function renderVideo(){
-    var ordered=["diet","junk food","whole food","food security","takeaway"];
-    var segs=ordered.map(function(w,i){return {word:w,start:starts[w],end:i<ordered.length-1?starts[ordered[i+1]]-1:undefined,level:ratings[w]||0}});
-    var needed=segs.filter(function(s){return s.level>=1&&s.level<=3});
+  function renderVideo(startFullImmediately){
+    const ordered=["diet","junk food","whole food","food security","takeaway"];
+    const segs=ordered.map((w,i)=>({word:w,start:starts[w],end:i<ordered.length-1?starts[ordered[i+1]]-1:undefined,level:ratings[w]||0}));
+    const needed=segs.filter(s=>s.level>=1&&s.level<=3);
 
-    var needWords=document.getElementById("need-words"); needWords.innerHTML="";
-    needed.forEach(function(s){var el=document.createElement("span"); el.className="pill"; el.textContent=s.word; needWords.appendChild(el);});
+    const needWords=document.getElementById("need-words"); needWords.innerHTML="";
+    needed.forEach(s=>{const e=document.createElement("span"); e.className="pill"; e.textContent=s.word; needWords.appendChild(e);});
 
-    var area=document.getElementById("video-area");
-    var segCount=document.getElementById("seg-count");
-    var segPct=document.getElementById("seg-pct");
-    var segBar=document.getElementById("seg-bar");
-    var modeLabel=document.getElementById("mode-label");
+    const area=document.getElementById("video-area");
+    const segCount=document.getElementById("seg-count");
+    const segPct=document.getElementById("seg-pct");
+    const segBar=document.getElementById("seg-bar");
+    const modeLabel=document.getElementById("mode-label");
 
-    var mode='none', idx=0, completed=new Array(needed.length).fill(false);
-    function updateProg(){var total=needed.length, done=completed.filter(Boolean).length, pct=total?Math.round(done/total*100):0; segCount.textContent="Segments completed: "+done+"/"+total; segPct.textContent=pct+"%"; segBar.style.width=pct+"%";}
+    let mode = startFullImmediately ? 'full' : 'none';
+    let idx=0, completed=new Array(needed.length).fill(false);
+    function updateProg(){const total=needed.length, done=completed.filter(Boolean).length, pct=total?Math.round(done/total*100):0; segCount.textContent=`Segments completed: ${done}/${total}`; segPct.textContent=`${pct}%`; if(segBar) segBar.style.width=`${pct}%`; }
     updateProg();
 
-    var ytReady=false, player=null;
-    function loadYT(){ if(window.YT&&window.YT.Player){onReady();return} var tag=document.createElement('script'); tag.src='https://www.youtube.com/iframe_api'; document.body.appendChild(tag); window.onYouTubeIframeAPIReady=onReady; }
+    let ytReady=false, player=null;
+    function loadYT(){ if(window.YT&&window.YT.Player){onReady();return} const tag=document.createElement('script'); tag.src='https://www.youtube.com/iframe_api'; document.body.appendChild(tag); window.onYouTubeIframeAPIReady=onReady; }
     function onReady(){ ytReady=true; if(mode==='focused') renderPlayer(); }
 
     function mountAPI(start,end){
       area.innerHTML='';
-      var wrap=document.createElement('div'); wrap.className='grid';
-      var meta=document.createElement('div'); meta.className='small'; meta.innerHTML='<b>Segment '+(idx+1)+' of '+needed.length+'</b> — '+needed[idx].word;
-      var holder=document.createElement('div'); holder.className='aspect'; var inner=document.createElement('div'); inner.id='yt-holder'; holder.appendChild(inner);
+      const meta=document.createElement('div'); meta.className='small'; meta.innerHTML=`<b>Segment ${idx+1} of ${needed.length}</b> — ${needed[idx].word}`;
+      const holder=document.createElement('div'); holder.className='aspect'; const inner=document.createElement('div'); inner.id='yt-holder'; holder.appendChild(inner);
 
-      var dots=document.createElement('div'); dots.className='dots';
-      needed.forEach(function(s,i){ var dot=document.createElement('button'); dot.className='dot '+(i===idx?'active':(completed[i]?'done':'')); dot.onclick=function(){idx=i; renderPlayer()}; dots.appendChild(dot); });
+      const dots=document.createElement('div'); dots.className='dots';
+      needed.forEach((s,i)=>{const d=document.createElement('button'); d.className='dot '+(i===idx?'active':(completed[i]?'done':'')); d.onclick=()=>{idx=i; renderPlayer()}; dots.appendChild(d);});
+      const timing=document.createElement('div'); timing.className='small'; timing.style.margin='6px 0'; timing.textContent=`Starts at ${fmt(start)}${typeof end!=='undefined'?' · ends at '+fmt(end):''}`;
 
-      var timing=document.createElement('div'); timing.className='small'; timing.style.marginTop='4px'; timing.textContent='Starts at '+fmt(start)+(typeof end!=='undefined'?' · ends at '+fmt(end):'');
-
-      var controls=document.createElement('div'); controls.className='hstack';
-      var btns=document.createElement('div'); btns.className='row';
-      var b1=document.createElement('button'); b1.className='btn'; b1.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Prev'; b1.disabled=idx===0; b1.onclick=function(){idx=Math.max(0,idx-1);renderPlayer()};
-      var b2=document.createElement('button'); b2.className='btn'; b2.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 8v8m-4-4h8" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/></svg>Rewatch'; b2.onclick=function(){ if(player){ player.seekTo(start,true); player.playVideo(); } };
-      var b3=document.createElement('button'); b3.className='btn primary'; b3.innerHTML='Next<svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'; b3.disabled=idx===needed.length-1; b3.onclick=function(){ idx=Math.min(needed.length-1,idx+1); renderPlayer(); };
+      const controls=document.createElement('div'); controls.className='hstack';
+      const btns=document.createElement('div'); btns.className='row';
+      const b1=document.createElement('button'); b1.className='btn'; b1.textContent='Prev'; b1.disabled=idx===0; b1.onclick=()=>{idx=Math.max(0,idx-1); renderPlayer();};
+      const b2=document.createElement('button'); b2.className='btn'; b2.textContent='Rewatch'; b2.onclick=()=>{ if(player){ player.seekTo(start,true); player.playVideo(); } };
+      const b3=document.createElement('button'); b3.className='btn primary'; b3.textContent='Next'; b3.disabled=idx===needed.length-1; b3.onclick=()=>{ idx=Math.min(needed.length-1,idx+1); renderPlayer(); };
       btns.appendChild(b1); btns.appendChild(b2); btns.appendChild(b3); controls.appendChild(document.createElement('span')); controls.appendChild(btns);
 
-      wrap.appendChild(meta); wrap.appendChild(holder); wrap.appendChild(dots); wrap.appendChild(timing); wrap.appendChild(controls); area.appendChild(wrap);
+      area.appendChild(meta); area.appendChild(holder); area.appendChild(dots); area.appendChild(timing); area.appendChild(controls);
 
       player=new YT.Player('yt-holder',{
         videoId:VIDEO_ID,
         playerVars:{start:start,end:end,controls:0,rel:0,fs:0,modestbranding:1,disablekb:1},
         events:{
-          onReady:function(e){ e.target.playVideo(); },
-          onStateChange:function(e){
+          onReady:(e)=>{ e.target.playVideo(); },
+          onStateChange:(e)=>{
             if(e.data===YT.PlayerState.ENDED){
               completed[idx]=true; updateProg();
               if(idx<needed.length-1){ idx++; renderPlayer(); }
@@ -373,28 +394,28 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-appl
       if(mode==='full'){
         modeLabel.textContent='Full video';
         area.innerHTML='';
-        var d=document.createElement('div'); d.className='aspect';
-        d.innerHTML='<iframe src="'+buildEmbed(undefined,undefined,false,false)+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
-        area.appendChild(d);
-      }else if(mode==='focused'){
+        const frame=document.createElement('div'); frame.className='aspect';
+        frame.innerHTML=`<iframe src="${buildEmbed(undefined,undefined,false,false)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+        area.appendChild(frame);
+      } else if(mode==='focused'){
         modeLabel.textContent='Focused';
         if(!needed.length){ area.innerHTML='<div class="small">Nice! You rated everything 4–5. Switch to Full video to watch without skips.</div>'; return; }
-        var cur=needed[idx];
-        if(ytReady){ mountAPI(cur.start,cur.end); } else{ loadYT(); }
-      }else{
+        const cur=needed[idx];
+        if(ytReady){ mountAPI(cur.start,cur.end); } else { loadYT(); }
+      } else {
         modeLabel.textContent='Choose a mode';
-        area.innerHTML='<div class="small">Choose <b>Focused</b> to watch only the parts for your levels 1–3, or <b>Full video</b> to watch everything.</div>';
+        area.innerHTML='<div class="small">Choose <b>Focused</b> to watch only the parts for your 1–3 words, or <b>Full video</b> to watch everything.</div>';
       }
     }
 
-    document.getElementById('btn-full').onclick=function(){ mode='full'; renderPlayer(); };
-    document.getElementById('btn-focused').onclick=function(){ mode='focused'; renderPlayer(); };
+    document.getElementById('btn-full').onclick=()=>{ mode='full'; renderPlayer(); };
+    document.getElementById('btn-focused').onclick=()=>{ mode='focused'; renderPlayer(); };
+
+    // If user came via SKIP on welcome, show Full immediately (no autoplay)
+    if(startFullImmediately){ renderPlayer(); }
   }
 
-  /* Back buttons */
   document.getElementById("btn-back-vid").onclick=function(){ show("summary"); }
-  /* Start coach */
-  renderCoach();
 
 })();
 </script>
