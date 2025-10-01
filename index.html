@@ -32,17 +32,16 @@ body{
 .btn-sm{padding:8px 10px;font-weight:800;font-size:14px}
 .btn-row{display:flex;gap:24px;justify-content:center;margin-top:14px}
 
-/* Coach header: progress + skip (static) */
-.header-strip{display:flex;gap:14px;align-items:center;justify-content:space-between}
-.prog-wrap{flex:1}
-.prog-text{font-weight:800}
-.progress{height:10px;background:#eef2f7;border:4px solid #000;border-radius:0;margin-top:6px;overflow:hidden}
+/* Coach header: Progress text | bar | Skip (static) */
+.header-strip{display:flex;gap:14px;align-items:center}
+.prog-text{font-weight:800;white-space:nowrap}
+.progress{flex:1;height:10px;background:#eef2f7;border:4px solid #000;border-radius:0;overflow:hidden}
 .progress>i{display:block;height:100%;background:var(--green);width:0}
 
 /* Coach text (larger than options) */
 .question{
   padding:14px 18px;border:4px solid #000;background:#fff;
-  font-size:22px;font-weight:800;margin:18px 0 12px;text-align:center
+  font-size:22px;font-weight:800;margin:22px 0 12px;text-align:center
 }
 
 /* Options: black rectangles, centered, narrower width */
@@ -51,13 +50,18 @@ body{
   display:block;text-align:center;background:#000;color:#fff;border:4px solid #000;border-radius:0;
   padding:16px 14px;opacity:0;transform:translateY(8px);width:100%;max-width:520px
 }
-/* options now use the same (question) font */
-.choice,.choice *{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+/* readable mono-ish font similar to question */
+.choice,.choice *{
+  font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace
+}
 .choice.show{opacity:1;transform:none;transition:opacity .55s ease, transform .55s ease}
 .choice.correct{outline:4px solid var(--green)}
 .choice.wrong{outline:4px solid var(--red)}
 .choice-title{font-weight:900;margin-bottom:6px;font-size:17px}
 .choice-desc{font-size:16px;color:#e5e7eb}
+
+/* Next button (only for level 4–5 flow) */
+.next-row{display:none;justify-content:flex-end;margin-top:12px}
 
 /* Chips and progress dots */
 .words-need{display:flex;gap:8px;flex-wrap:wrap}
@@ -103,18 +107,16 @@ body{
   <!-- Screen 1: Coach-guided assessment -->
   <div class="section" id="sec-coach">
     <div class="header-strip">
-      <div class="prog-wrap">
-        <div class="prog-text">Progress: <span id="coach-progress">0/5</span></div>
-        <div class="progress"><i id="prog-bar"></i></div>
-      </div>
+      <div class="prog-text">Progress: <span id="coach-progress">0/5</span></div>
+      <div class="progress"><i id="prog-bar"></i></div>
       <button class="btn btn-sm" id="coach-skip">SKIP</button>
     </div>
 
     <div class="question" id="coach-bubble"></div>
     <div id="coach-area"></div>
 
-    <div class="btn-row" id="next-row" style="margin-top:8px">
-      <button class="btn btn-sm" id="btn-next-word" disabled>NEXT</button>
+    <div class="next-row" id="next-row">
+      <button class="btn btn-sm" id="btn-next-word">NEXT</button>
     </div>
 
     <div class="spacer"></div>
@@ -258,9 +260,9 @@ body{
   const wait = (ms)=>new Promise(r=>setTimeout(r,ms));
 
   /* ---------- State ---------- */
-  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v7"))}catch(e){ratings=null}
+  var ratings; try{ratings=JSON.parse(localStorage.getItem("food-coach-ratings-v8"))}catch(e){ratings=null}
   if(!ratings){ratings={}; WORDS.forEach(w=>ratings[w]=0)}
-  function save(){ try{localStorage.setItem("food-coach-ratings-v7",JSON.stringify(ratings))}catch(e){} }
+  function save(){ try{localStorage.setItem("food-coach-ratings-v8",JSON.stringify(ratings))}catch(e){} }
 
   var S={welcome:document.getElementById("sec-welcome"), coach:document.getElementById("sec-coach"), summary:document.getElementById("sec-summary"), video:document.getElementById("sec-video")};
   function show(id){ Object.values(S).forEach(x=>x.classList.remove("active")); S[id].classList.add("active"); }
@@ -287,6 +289,7 @@ body{
   var prog=document.getElementById("coach-progress");
   var progBar=document.getElementById("prog-bar");
   document.getElementById("coach-skip").onclick=function(){ renderVideo(true); show("video"); };
+  const nextRow=document.getElementById("next-row");
   const nextBtn=document.getElementById("btn-next-word");
 
   let optionTimers=[];
@@ -299,7 +302,7 @@ body{
 
   async function startCoach(){
     coachIdx=0; area.innerHTML=""; updateProgress();
-    nextBtn.disabled=true;
+    nextRow.style.display="none";
     await wait(600);
     await typeText(bubble, "We’ll go word by word. Tell me how well you know each one.", 38);
     await wait(800);
@@ -309,7 +312,7 @@ body{
   async function renderCoach(){
     clearOptionTimers();
     area.innerHTML="";
-    nextBtn.disabled=true;
+    nextRow.style.display="none";
     if(coachIdx>=WORDS.length){ showSummary(); return; }
     const w=WORDS[coachIdx];
     await wait(600);
@@ -331,11 +334,12 @@ body{
 
   async function handleLevel(word, level, listEl){
     clearOptionTimers();
-    nextBtn.disabled=true;
+    nextRow.style.display="none";
     if(level<=3){
       ratings[word]=level; save(); updateProgress();
-      await wait(400); await typeText(bubble, "Thanks—got it. Click NEXT.", 34);
-      nextBtn.disabled=false;
+      await wait(400); await typeText(bubble, "Thanks—got it.", 34);
+      await wait(500);
+      coachIdx++; renderCoach(); // auto-advance for 1–3
       return;
     }
     // Hide level options first, then ask challenge question
@@ -355,13 +359,14 @@ body{
         if(i===Q.a){
           b.classList.add("correct");
           ratings[word]=level; save(); updateProgress();
-          await wait(400); await typeText(bubble, "Nice use! Click NEXT.", 32);
+          await wait(400); await typeText(bubble, "Nice use!", 32);
         }else{
           b.classList.add("wrong");
-          await wait(400); await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb} Click NEXT.`, 32);
+          await wait(400); await typeText(bubble, `We’ll study “${word}” later. Tip: ${Q.fb}`, 32);
           ratings[word]=3; save(); updateProgress();
         }
-        nextBtn.disabled=false;
+        // show NEXT only after completing 4–5 task
+        nextRow.style.display="flex";
       };
       list.appendChild(b);
       optionTimers.push(setTimeout(()=>b.classList.add("show"), 420*i + 320));
@@ -391,7 +396,6 @@ body{
     p.set("autoplay",autoplay?"1":"0");
     return `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?${p.toString()}`;
   }
-  function fmt(t){const m=('0'+Math.floor(t/60)).slice(-2);const s=('0'+(t%60)).slice(-2);return `${m}:${s}`;}
 
   function renderVideo(startFullImmediately){
     const ordered=["diet","junk food","whole food","food security","takeaway"];
@@ -404,9 +408,8 @@ body{
     const area=document.getElementById("video-area");
     const dotsHost=document.getElementById("seg-dots"); dotsHost.innerHTML="";
     let mode = startFullImmediately ? 'full' : 'focused';
-    let idx=0, started=new Array(needed.length).fill(false); // turn green when started
+    let idx=0, started=new Array(needed.length).fill(false);
 
-    // Build static dots once
     needed.forEach(()=>{const d=document.createElement('button'); d.className='dot'; dotsHost.appendChild(d);});
 
     let ytReady=false, player=null;
@@ -442,7 +445,7 @@ body{
         }
       });
 
-      // nav buttons (same line with dots)
+      // nav buttons
       document.getElementById('btn-prev').onclick=()=>{ if(mode==='focused'){ idx=Math.max(0,idx-1); renderPlayer(); } };
       document.getElementById('btn-rewatch').onclick=()=>{ if(player){ if(mode==='focused'){ player.seekTo(start,true); } player.playVideo(); } };
       document.getElementById('btn-next').onclick=()=>{ if(mode==='focused'){ idx=Math.min(needed.length-1,idx+1); renderPlayer(); } };
@@ -466,16 +469,14 @@ body{
       }
     }
 
-    // mode buttons outside the word box
     document.getElementById('link-focused').onclick=()=>{ mode='focused'; renderPlayer(); };
     document.getElementById('link-full').onclick=()=>{ mode='full'; renderPlayer(); };
 
-    // Show video immediately (focused autoplay by default)
     if(!startFullImmediately) mode='focused';
     renderPlayer();
   }
 
-  // Navigation to video from other screens
+  // Navigation
   document.getElementById("btn-next-sum").onclick=function(){ renderVideo(false); show("video"); };
 
 })();
